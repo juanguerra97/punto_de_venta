@@ -53,7 +53,7 @@ public final class Sucursal {
 			return false;
 		Sucursal other = (Sucursal) obj;
 		if (id != other.id)
-			return false;
+			return nombre.equalsIgnoreCase(other.nombre);
 		return true;
 	}
 
