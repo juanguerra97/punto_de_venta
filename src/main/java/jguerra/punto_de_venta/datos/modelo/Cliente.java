@@ -1,5 +1,7 @@
 package jguerra.punto_de_venta.datos.modelo;
 
+import jguerra.punto_de_venta.datos.validacion.Validacion;
+
 public final class Cliente {
 	
 	private String nit;
@@ -22,6 +24,8 @@ public final class Cliente {
 		assert nit != null;
 		if(nit.isEmpty())
 			throw new IllegalArgumentException("El NIT no puede quedar vacío");
+		if(!Validacion.validarNit(nit))
+			throw new IllegalArgumentException("El NIT es inválido");
 		this.nit = nit;
 	}
 	
@@ -57,6 +61,8 @@ public final class Cliente {
 			throw new IllegalArgumentException("El teléfono no puede quedar vacío");
 		if(telefono.length() != 8)
 			throw new IllegalArgumentException("El teléfono debe tener 8 dígitos");
+		if(!Validacion.TELEFONO.matcher(telefono).find())
+			throw new IllegalArgumentException("El teléfono sólo puede contener dígitos");
 		this.telefono = telefono;
 	}
 

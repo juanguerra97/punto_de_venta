@@ -3,6 +3,8 @@ package jguerra.punto_de_venta.datos.modelo;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import jguerra.punto_de_venta.datos.validacion.Validacion;
+
 public final class Venta {
 	
 	private int numero;
@@ -44,6 +46,8 @@ public final class Venta {
 		assert nitCliente != null;
 		if(nitCliente.isEmpty())
 			throw new IllegalArgumentException("El NIT del cliente no puede quedar vacío");
+		if(!Validacion.validarNit(nitCliente))
+			throw new IllegalArgumentException("El NIT del cliente es inválido");
 		this.nitCliente = nitCliente;
 	}
 	
