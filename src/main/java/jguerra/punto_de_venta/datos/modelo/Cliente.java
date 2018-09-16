@@ -61,7 +61,7 @@ public final class Cliente {
 			throw new IllegalArgumentException("El teléfono no puede quedar vacío");
 		if(telefono.length() != 8)
 			throw new IllegalArgumentException("El teléfono debe tener 8 dígitos");
-		if(!Validacion.TELEFONO.matcher(telefono).find())
+		if(!Validacion.validarTelefono(telefono))
 			throw new IllegalArgumentException("El teléfono sólo puede contener dígitos");
 		this.telefono = telefono;
 	}

@@ -10,6 +10,16 @@ public final class Validacion {
 	public static final Pattern NIT = Pattern.compile("^(\\d)+-([\\dk])$", Pattern.CASE_INSENSITIVE);
 	
 	/**
+	 * Metodo para saber si un telefono es valido o no
+	 * @param telefono cadena con el telefono a validar
+	 * @return true si el telefono es valido(la cadena contiene exactamente 8 digitos),
+	 * false si no es valido
+	 */
+	public static boolean validarTelefono(final String telefono) {
+		return TELEFONO.matcher(telefono).find();
+	}
+	
+	/**
 	 * Metodo para saber si un NIT es valido o no
 	 * @param nit cadena con el NIT a validar, no debe ser null
 	 * @return true si el NIT es valido, false si no
