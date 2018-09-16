@@ -7,7 +7,7 @@ public final class Validacion {
 	
 	public static final Pattern TELEFONO = Pattern.compile("^\\d{8}$");
 	
-	public static final Pattern NIT = Pattern.compile("^(\\d)+-([\\dk])$", Pattern.CASE_INSENSITIVE);
+	public static final Pattern NIT = Pattern.compile("^(\\d+)-([\\dk])$", Pattern.CASE_INSENSITIVE);
 	
 	/**
 	 * Metodo para saber si un telefono es valido o no
@@ -16,6 +16,7 @@ public final class Validacion {
 	 * false si no es valido
 	 */
 	public static boolean validarTelefono(final String telefono) {
+		assert telefono != null;
 		return TELEFONO.matcher(telefono).find();
 	}
 	
