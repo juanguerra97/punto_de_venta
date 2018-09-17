@@ -5,15 +5,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class SeqSucursal implements Sequence {
+public class SeqIdSucursal implements Sequence {
 	
 	private static final String NEXT_VAL = "SELECT sucursal_id_seq.NEXTVAL AS val FROM DUAL;";
 	
-	private static SeqSucursal INSTANCE = null;
+	private static SeqIdSucursal INSTANCE = null;
 	
 	private Connection conexion;
 	
-	private SeqSucursal(final Connection conexion) {
+	private SeqIdSucursal(final Connection conexion) {
 		assert conexion != null;
 		this.conexion = conexion;
 	}
@@ -31,9 +31,9 @@ public class SeqSucursal implements Sequence {
 		return nextVal;
 	}
 	
-	public static final SeqSucursal instance(Connection conexion) {
+	public static final SeqIdSucursal instance(final Connection conexion) {
 		if(INSTANCE == null)
-			INSTANCE = new SeqSucursal(conexion);
+			INSTANCE = new SeqIdSucursal(conexion);
 		return INSTANCE;
 	}
 
