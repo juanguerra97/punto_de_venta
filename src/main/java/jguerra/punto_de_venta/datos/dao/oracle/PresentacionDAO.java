@@ -60,10 +60,11 @@ public class PresentacionDAO {
 		return presentaciones;
 	}
 	
-	public void insert(final Presentacion presentacion) throws SQLException {
+	public int insert(final Presentacion presentacion) throws SQLException {
 		assert presentacion != null;
+		int id = 0;
 		try(PreparedStatement st = conexion.prepareStatement(INSERT)){
-			int id = SeqIdPresentacion.instance(conexion).next();
+			id = SeqIdPresentacion.instance(conexion).next();
 			st.setInt(1, id);
 			st.setInt(2, presentacion.getIdProducto());
 			st.setString(3, presentacion.getNombre());
@@ -77,6 +78,7 @@ public class PresentacionDAO {
 					throw new SQLException("El nombre de la presentacion esta duplicado",e);
 			throw new SQLException("Error en la consulta",e);
 		}
+		return id;
 	}
 	
 	public void update(final Presentacion presentacion) throws SQLException {
