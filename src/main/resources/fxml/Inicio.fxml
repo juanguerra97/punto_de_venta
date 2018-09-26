@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.layout.BorderPane?>
+
+
+<BorderPane prefHeight="450.0" prefWidth="750.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.141" fx:controller="jguerra.punto_de_venta.gui.InicioController">
+   <center>
+      <TabPane tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+        <tabs>
+          <Tab fx:id="tabProductos" text="Productos" />
+          <Tab fx:id="tabSucursales" text="Sucursales" />
+            <Tab fx:id="tabClientes" text="Clientes" />
+            <Tab fx:id="tabProveedores" text="Proveedores" />
+            <Tab fx:id="tabCompras" text="Compras" />
+            <Tab fx:id="tabVentas" text="Ventas" />
+        </tabs>
+      </TabPane>
+   </center>
+</BorderPane>
