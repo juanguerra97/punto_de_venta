@@ -7,7 +7,7 @@ import java.sql.Statement;
 
 public class SeqNumeroVenta implements Sequence {
 	
-	private static final String NEXT_VAL = "SELECT numero_venta_seq.NEXTVAL AS val FROM DUAL;";
+	private static final String NEXT_VAL = "SELECT numero_venta_seq.NEXTVAL AS val FROM DUAL";
 
 	private static SeqNumeroVenta INSTANCE = null;
 	
