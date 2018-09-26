@@ -59,6 +59,7 @@ public class SucursalDAO {
 			id = SeqIdSucursal.instance(conexion).next();
 			st.setInt(1, id);
 			st.setString(2, sucursal.getNombre());
+			st.executeUpdate();
 		} catch (SQLException e) {
 			String msg = e.getMessage();
 			if(msg != null)
