@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ContextMenu?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import org.controlsfx.control.textfield.CustomTextField?>
+
+
+<BorderPane prefHeight="450.0" prefWidth="750.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.141" fx:controller="jguerra.punto_de_venta.gui.sucursales.SucursalesController">
+   <center>
+      <VBox spacing="4.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label text="Sucursales" />
+            <TableView fx:id="tablaSucursales" VBox.vgrow="ALWAYS">
+              <columns>
+                <TableColumn fx:id="colId" editable="false" maxWidth="4000.0" minWidth="100.0" prefWidth="-1.0" text="ID" />
+                <TableColumn fx:id="colNombre" editable="false" minWidth="250.0" prefWidth="-1.0" text="Nombre" />
+              </columns>
+               <contextMenu>
+                  <ContextMenu onShown="#onTablaSucursalesContextMenuShown">
+                    <items>
+                        <MenuItem fx:id="menuItemEliminar" disable="true" mnemonicParsing="false" onAction="#onEliminar" text="Eliminar" />
+                      <MenuItem fx:id="menuItemDeseleccionar" disable="true" mnemonicParsing="false" onAction="#onDeseleccionar" text="Deseleccionar" />
+                    </items>
+                  </ContextMenu>
+               </contextMenu>
+            </TableView>
+            <HBox spacing="4.0">
+               <children>
+                  <CustomTextField fx:id="fieldNombre" maxWidth="250.0" promptText="Nombre de la sucursal" HBox.hgrow="ALWAYS" />
+                  <Button fx:id="boton" disable="true" mnemonicParsing="false" onAction="#onBoton" text="Ingresar" />
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </center>
+   <padding>
+      <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+   </padding>
+</BorderPane>
