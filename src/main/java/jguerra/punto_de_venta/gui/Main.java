@@ -15,15 +15,19 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import jguerra.punto_de_venta.db.oracle.Conexion;
 
 public class Main extends Application {
 	
-	private static NotificationPane root = new NotificationPane();
-
+	private static final NotificationPane root = new NotificationPane();
+	private static final Alert ERROR_ALERT = new Alert(AlertType.ERROR,"",new ButtonType("Entendido")); 
+	
 	@Override
 	public void start(Stage stage) throws Exception {
+		
+		ERROR_ALERT.initModality(Modality.APPLICATION_MODAL);
 		
 		try {
 			Conexion.get();
@@ -73,6 +77,13 @@ public class Main extends Application {
 	            });
 	        }
 	    }, 3000, 3000);
+	}
+	
+	public static void alertError(final String title,final String header,final String message) {
+		ERROR_ALERT.setTitle(title);
+		ERROR_ALERT.setHeaderText(header);
+		ERROR_ALERT.setContentText(message);
+		ERROR_ALERT.showAndWait();
 	}
 
 }
