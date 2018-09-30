@@ -14,9 +14,8 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.WindowEvent;
-import jguerra.punto_de_venta.datos.dao.oracle.SucursalDAO;
+import jguerra.punto_de_venta.datos.dao.oracle.DAOManager;
 import jguerra.punto_de_venta.datos.modelo.Sucursal;
-import jguerra.punto_de_venta.db.oracle.Conexion;
 import jguerra.punto_de_venta.gui.Main;
 
 public class SucursalesController {
@@ -42,24 +41,19 @@ public class SucursalesController {
     @FXML
     private Button boton;
     
-    private SucursalDAO daoSucursal = null;
+    private DAOManager manager;
     private ObservableList<Sucursal> sucursales;
     
     private void cargarSucursales() {
-    	if(daoSucursal == null) {
-    		try {
-				daoSucursal = new SucursalDAO(Conexion.get());
-			} catch (SQLException e) {
-				daoSucursal = null;
-				e.printStackTrace();
-				return;
-			}
-    	}
-    	sucursales.setAll(daoSucursal.selectAll());
+    	manager.sucursal().ifPresent(dao -> {
+    		sucursales.setAll(dao.selectAll());
+    	});
     }
     
     @FXML
     private void initialize() {
+    	
+    	manager = DAOManager.instance();
     	
     	sucursales = tablaSucursales.getItems();
     	tablaSucursales.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
@@ -89,47 +83,40 @@ public class SucursalesController {
     
     @FXML
     private void onBoton(ActionEvent event) {
-    	if(daoSucursal == null) {
-    		try {
-				daoSucursal = new SucursalDAO(Conexion.get());
-			} catch (SQLException e) {
-				daoSucursal = null;
-				e.printStackTrace();
-				return;
-			}
-    	}
-    	Sucursal sucursal = tablaSucursales.getSelectionModel().getSelectedItem();
-    	String nombre = fieldNombre.getText().trim().toUpperCase();
-    	if(sucursal == null) {
-    		sucursal = new Sucursal(nombre);
-    		try {
-				int id = daoSucursal.insert(sucursal);
-				sucursales.add(new Sucursal(id,nombre));
-				Main.notificar("Se registró la sucursal \"" + nombre + "\"");
-				fieldNombre.clear();
-				tablaSucursales.requestFocus();
-			} catch (SQLException e) {
-				Main.notificar(e.getMessage());
-				fieldNombre.selectAll();
-				fieldNombre.requestFocus();
-				e.printStackTrace();
-			}
-    	} else {
-    		int indice = sucursales.indexOf(sucursal);
-    		sucursal.setNombre(nombre);
-    		try {
-				daoSucursal.update(sucursal);
-				sucursales.set(indice, sucursal);
-				tablaSucursales.getSelectionModel().select(indice);
-				Main.notificar("Se actualizó el nombre de una sucursal");
-				tablaSucursales.requestFocus();
-			} catch (SQLException e) {
-				Main.notificar(e.getMessage());
-				fieldNombre.selectAll();
-				fieldNombre.requestFocus();
-				e.printStackTrace();
-			}
-    	}
+    	manager.sucursal().ifPresent(dao -> {
+    		Sucursal sucursal = tablaSucursales.getSelectionModel().getSelectedItem();
+        	String nombre = fieldNombre.getText().trim().toUpperCase();
+        	if(sucursal == null) {
+        		sucursal = new Sucursal(nombre);
+        		try {
+    				int id = dao.insert(sucursal);
+    				sucursales.add(new Sucursal(id,nombre));
+    				Main.notificar("Se registró la sucursal \"" + nombre + "\"");
+    				fieldNombre.clear();
+    				tablaSucursales.requestFocus();
+    			} catch (SQLException e) {
+    				Main.notificar(e.getMessage());
+    				fieldNombre.selectAll();
+    				fieldNombre.requestFocus();
+    				e.printStackTrace();
+    			}
+        	} else {
+        		int indice = sucursales.indexOf(sucursal);
+        		sucursal.setNombre(nombre);
+        		try {
+    				dao.update(sucursal);
+    				sucursales.set(indice, sucursal);
+    				tablaSucursales.getSelectionModel().select(indice);
+    				Main.notificar("Se actualizó el nombre de una sucursal");
+    				tablaSucursales.requestFocus();
+    			} catch (SQLException e) {
+    				Main.notificar(e.getMessage());
+    				fieldNombre.selectAll();
+    				fieldNombre.requestFocus();
+    				e.printStackTrace();
+    			}
+        	}
+    	});
     	
     }
     
@@ -147,26 +134,19 @@ public class SucursalesController {
     
     @FXML
     private void onEliminar(ActionEvent event) {
-    	if(daoSucursal == null) {
-    		try {
-				daoSucursal = new SucursalDAO(Conexion.get());
-			} catch (SQLException e) {
-				daoSucursal = null;
-				e.printStackTrace();
-				return;
-			}
-    	}
-    	Sucursal sucursal = tablaSucursales.getSelectionModel().getSelectedItem();
-    	tablaSucursales.getSelectionModel().clearSelection();
-    	try {
-			daoSucursal.delete(sucursal.getId());
-			sucursales.remove(sucursal);
-			Main.notificar("Se eliminó una sucursal");
-			tablaSucursales.requestFocus();
-		} catch (SQLException e) {
-			Main.notificar(e.getMessage());
-			e.printStackTrace();
-		}
+    	manager.sucursal().ifPresent(dao -> {
+    		Sucursal sucursal = tablaSucursales.getSelectionModel().getSelectedItem();
+        	tablaSucursales.getSelectionModel().clearSelection();
+        	try {
+    			dao.delete(sucursal.getId());
+    			sucursales.remove(sucursal);
+    			Main.notificar("Se eliminó una sucursal");
+    			tablaSucursales.requestFocus();
+    		} catch (SQLException e) {
+    			Main.notificar(e.getMessage());
+    			e.printStackTrace();
+    		}
+    	});
     }
 	
 }
