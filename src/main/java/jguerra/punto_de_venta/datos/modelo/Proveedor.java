@@ -22,7 +22,7 @@ public final class Proveedor {
 		return id;
 	}
 	
-	private void setId(final int id) {
+	public void setId(final int id) {
 		if(id < 0)
 			throw new IllegalArgumentException("El ID no puede ser negativo");
 		this.id = id;
