@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ContextMenu?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane prefHeight="450.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jguerra.punto_de_venta.gui.productos.ProductosController">
+   <center>
+      <SplitPane dividerPositions="0.55" orientation="VERTICAL" BorderPane.alignment="CENTER">
+         <items>
+            <VBox minHeight="150.0" spacing="4.0">
+               <children>
+                  <HBox alignment="CENTER_LEFT" spacing="5.0">
+                     <children>
+                        <Label text="Productos" />
+                     </children>
+                  </HBox>
+                  <TableView fx:id="tablaProductos" VBox.vgrow="ALWAYS">
+                    <columns>
+                      <TableColumn fx:id="colIdProducto" maxWidth="1000.0" minWidth="75.0" prefWidth="-1.0" text="ID" />
+                      <TableColumn fx:id="colNombreProducto" minWidth="200.0" prefWidth="-1.0" text="Nombre" />
+                        <TableColumn fx:id="colMarcaProducto" maxWidth="4000.0" minWidth="160.0" prefWidth="-1.0" text="Marca" />
+                    </columns>
+                     <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                     </columnResizePolicy>
+                     <contextMenu>
+                        <ContextMenu onShown="#onProductosContextMenuShown">
+                          <items>
+                            <MenuItem mnemonicParsing="false" onAction="#onNuevoProducto" text="Nuevo" />
+                              <MenuItem fx:id="itemEliminarProducto" disable="true" mnemonicParsing="false" onAction="#onEliminarProducto" text="Eliminar" />
+                              <MenuItem fx:id="itemDeseleccionarProducto" disable="true" mnemonicParsing="false" onAction="#onDeseleccionarProducto" text="Deseleccionar" />
+                          </items>
+                        </ContextMenu>
+                     </contextMenu>
+                  </TableView>
+               </children>
+               <padding>
+                  <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+               </padding>
+            </VBox>
+            <SplitPane dividerPositions="0.6" minHeight="100.0">
+               <items>
+                  <VBox minWidth="200.0" spacing="4.0">
+                     <children>
+                        <Label text="Presentaciones" />
+                        <TableView fx:id="tablaPresentaciones" VBox.vgrow="ALWAYS">
+                          <columns>
+                            <TableColumn fx:id="colNombrePresentacion" minWidth="150.0" prefWidth="-1.0" text="Nombre" />
+                            <TableColumn fx:id="colPrecioPresentacion" maxWidth="3000.0" minWidth="120.0" prefWidth="-1.0" text="Precio" />
+                              <TableColumn fx:id="colCostoPresentacion" maxWidth="3000.0" minWidth="120.0" prefWidth="-1.0" text="Costo" />
+                          </columns>
+                           <columnResizePolicy>
+                              <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                           </columnResizePolicy>
+                           <contextMenu>
+                              <ContextMenu onShown="#onPresentacionesContextMenuShown">
+                                <items>
+                                  <MenuItem fx:id="itemNuevaPresentacion" disable="true" mnemonicParsing="false" onAction="#onNuevaPresentacion" text="Nueva" />
+                                    <MenuItem fx:id="itemEliminarPresentacion" disable="true" mnemonicParsing="false" onAction="#onEliminarPresentacion" text="Eliminar" />
+                                    <MenuItem fx:id="itemDeseleccionarPresentacion" disable="true" mnemonicParsing="false" onAction="#onDeseleccionarPresentacion" text="Deseleccionar" />
+                                </items>
+                              </ContextMenu>
+                           </contextMenu>
+                        </TableView>
+                     </children>
+                     <padding>
+                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                     </padding>
+                  </VBox>
+                  <VBox minWidth="100.0" spacing="4.0">
+                     <children>
+                        <Label text="Existencias" />
+                        <TableView fx:id="tablaExistencias" VBox.vgrow="ALWAYS">
+                          <columns>
+                            <TableColumn fx:id="colSucursalExistencia" maxWidth="4000.0" minWidth="60.0" prefWidth="-1.0" text="Sucursal" />
+                            <TableColumn fx:id="colCantidadExistencia" minWidth="60.0" prefWidth="-1.0" text="Cantidad" />
+                          </columns>
+                           <columnResizePolicy>
+                              <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                           </columnResizePolicy>
+                           <contextMenu>
+                              <ContextMenu onShown="#onExistenciasContextMenuShown">
+                                <items>
+                                  <MenuItem fx:id="itemNuevaExistencia" disable="true" mnemonicParsing="false" onAction="#onNuevaExistencia" text="Nueva" />
+                                    <MenuItem fx:id="itemEliminarExistencia" disable="true" mnemonicParsing="false" onAction="#onEliminarExistencia" text="Eliminar" />
+                                    <MenuItem fx:id="itemDeseleccionarExistencia" disable="true" mnemonicParsing="false" onAction="#onDeseleccionarExistencia" text="Deseleccionar" />
+                                </items>
+                              </ContextMenu>
+                           </contextMenu>
+                        </TableView>
+                     </children>
+                     <padding>
+                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                     </padding>
+                  </VBox>
+               </items>
+            </SplitPane>
+         </items>
+      </SplitPane>
+   </center>
+</BorderPane>
