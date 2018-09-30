@@ -5,6 +5,7 @@ import java.io.IOException;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Tab;
+import jguerra.punto_de_venta.gui.productos.ProductosController;
 
 public class InicioController {
 
@@ -26,12 +27,19 @@ public class InicioController {
     @FXML
     private Tab tabVentas;
     
+    private ProductosController controllerProductos;
+    
     @FXML
     private void initialize() {
     	
     	try {
 			tabSucursales.setContent(FXMLLoader.load(getClass().getResource("/fxml/sucursales/Sucursales.fxml")));
-		} catch (IOException e) {
+			
+			FXMLLoader loaderProd = new FXMLLoader(getClass().getResource("/fxml/productos/Productos.fxml"));
+			tabProductos.setContent(loaderProd.load());
+			controllerProductos = loaderProd.getController();
+			
+    	} catch (IOException e) {
 			e.printStackTrace();
 		}
     	
