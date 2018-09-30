@@ -16,6 +16,8 @@ public class ExistenciaDAO {
 			+ " AND id_sucursal = ?";
 	public static final String SELECT_ALL_BY_PRESENTACION = "SELECT id_sucursal,cantidad"
 			+ " FROM existencias WHERE id_presentacion = ?";
+	public static final String INSERT = "INSERT INTO existencias(id_presentacion,"
+			+ "id_sucursal,cantidad) VALUES(?,?,?)";
 	public static final String UPDATE = "UPDATE existencias SET cantidad = ?"
 			+ " WHERE id_presentacion = ? AND id_sucursal = ?";
 	public static final String DELETE = "DELETE FROM existencias WHERE id_presentacion = ?"
@@ -57,6 +59,22 @@ public class ExistenciaDAO {
 			e.printStackTrace();
 		}
 		return existencias;
+	}
+	
+	public void insert(final Existencia existencia) throws SQLException {
+		assert existencia != null;
+		try(PreparedStatement st = conexion.prepareStatement(INSERT)){
+			st.setInt(1, existencia.getIdPresentacion());
+			st.setInt(2, existencia.getIdSucursal());
+			st.setInt(3, existencia.getCantidad());
+			st.executeUpdate();
+		} catch (SQLException e) {
+			String msg = e.getMessage();
+			if(msg != null)
+				if(msg.equals("ORA-00001: unique constraint (ADMIN_PV.EXISTENCIA_PK) violated\n"))
+					throw new SQLException("Ya hay existencias del producto para la sucursal", e);
+			throw new SQLException("Ocurrió un error con la consulta", e);
+		}
 	}
 	
 	public void update(final Existencia existencia) {
