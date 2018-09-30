@@ -94,6 +94,9 @@ public class ProductosController {
     private Stage windowNuevaPresentacion;
     private NuevaPresentacionController controllerNuevaPresentacion;
     
+    private Stage windowNuevaExistencia;
+    private NuevaExistenciaController controllerNuevaExistencia;
+    
     private void cargarProductos() {
     	manager.producto().ifPresent(dao -> {
     		productos.setAll(dao.selectAll());
@@ -170,6 +173,16 @@ public class ProductosController {
 			windowNuevaPresentacion.setMinWidth(380);
 			windowNuevaPresentacion.setMinHeight(220);
 			windowNuevaPresentacion.initModality(Modality.APPLICATION_MODAL);
+			
+			FXMLLoader loaderNuevaExistencia = new FXMLLoader(getClass().getResource("/fxml/productos/NuevaExistencia.fxml"));
+			Scene sceneNuevaExistencia = new Scene(loaderNuevaExistencia.load(),380,200);
+			controllerNuevaExistencia = loaderNuevaExistencia.getController();
+			windowNuevaExistencia = new Stage();
+			windowNuevaExistencia.setScene(sceneNuevaExistencia);
+			windowNuevaExistencia.setTitle("Nueva existencia");
+			windowNuevaExistencia.setMinWidth(380);
+			windowNuevaExistencia.setMinHeight(200);
+			windowNuevaExistencia.initModality(Modality.APPLICATION_MODAL);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -268,7 +281,14 @@ public class ProductosController {
 	
 	@FXML
 	private void onNuevaExistencia(ActionEvent event) {
-		
+		controllerNuevaExistencia.reset();
+		controllerNuevaExistencia.cargarSucursales();
+		controllerNuevaExistencia.setPresentacion(tablaPresentaciones.getSelectionModel().getSelectedItem());
+		windowNuevaExistencia.showAndWait();
+		controllerNuevaExistencia.getExistencia().ifPresent(existencia -> {
+			existencias.add(existencia);
+			Main.notificar("Se agregó una nueva existencia");
+		});
 	}
 	
 	@FXML
