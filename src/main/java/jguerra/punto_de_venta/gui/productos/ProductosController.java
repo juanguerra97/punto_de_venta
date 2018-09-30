@@ -1,16 +1,21 @@
 package jguerra.punto_de_venta.gui.productos;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import jguerra.punto_de_venta.datos.dao.oracle.DAOManager;
 import jguerra.punto_de_venta.datos.modelo.Existencia;
@@ -83,6 +88,9 @@ public class ProductosController {
     private ObservableList<Presentacion> presentaciones;
     private ObservableList<Existencia> existencias;
     
+    private Stage windowNuevoProducto;
+    private NuevoProductoController controllerNuevoProducto;
+    
     private void cargarProductos() {
     	manager.producto().ifPresent(dao -> {
     		productos.setAll(dao.selectAll());
@@ -139,6 +147,20 @@ public class ProductosController {
 			}
 		});
 		
+		try {
+			FXMLLoader loaderNuevoProducto = new FXMLLoader(getClass().getResource("/fxml/productos/NuevoProducto.fxml"));
+			Scene sceneNuevoProducto = new Scene(loaderNuevoProducto.load(),380,200);
+			controllerNuevoProducto = loaderNuevoProducto.getController();
+			windowNuevoProducto = new Stage();
+			windowNuevoProducto.setScene(sceneNuevoProducto);
+			windowNuevoProducto.setTitle("Nuevo producto");
+			windowNuevoProducto.setMinWidth(380);
+			windowNuevoProducto.setMinHeight(200);
+			windowNuevoProducto.initModality(Modality.APPLICATION_MODAL);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 		cargarProductos();
 		
 	}
@@ -152,7 +174,13 @@ public class ProductosController {
 	
 	@FXML
 	private void onNuevoProducto(ActionEvent event) {
-		
+		controllerNuevoProducto.reset();
+		windowNuevoProducto.showAndWait();
+		controllerNuevoProducto.getProducto().ifPresent(producto -> {
+			productos.add(producto);
+			productos.sort((prod1,prod2)->Integer.compare(prod1.getId(), prod2.getId()));
+			Main.notificar("Se ingresó un nuevo producto");
+		});
 	}
 	
 	@FXML
