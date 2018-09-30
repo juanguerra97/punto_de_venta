@@ -91,6 +91,9 @@ public class ProductosController {
     private Stage windowNuevoProducto;
     private NuevoProductoController controllerNuevoProducto;
     
+    private Stage windowNuevaPresentacion;
+    private NuevaPresentacionController controllerNuevaPresentacion;
+    
     private void cargarProductos() {
     	manager.producto().ifPresent(dao -> {
     		productos.setAll(dao.selectAll());
@@ -157,6 +160,16 @@ public class ProductosController {
 			windowNuevoProducto.setMinWidth(380);
 			windowNuevoProducto.setMinHeight(200);
 			windowNuevoProducto.initModality(Modality.APPLICATION_MODAL);
+			
+			FXMLLoader loaderNuevaPresentacion = new FXMLLoader(getClass().getResource("/fxml/productos/NuevaPresentacion.fxml"));
+			Scene sceneNuevaPresentacion = new Scene(loaderNuevaPresentacion.load(),380,220);
+			controllerNuevaPresentacion = loaderNuevaPresentacion.getController();
+			windowNuevaPresentacion = new Stage();
+			windowNuevaPresentacion.setScene(sceneNuevaPresentacion);
+			windowNuevaPresentacion.setTitle("Nueva presentación");
+			windowNuevaPresentacion.setMinWidth(380);
+			windowNuevaPresentacion.setMinHeight(220);
+			windowNuevaPresentacion.initModality(Modality.APPLICATION_MODAL);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -214,7 +227,13 @@ public class ProductosController {
 	
 	@FXML
 	private void onNuevaPresentacion(ActionEvent event) {
-		
+		controllerNuevaPresentacion.reset();
+		controllerNuevaPresentacion.setProducto(tablaProductos.getSelectionModel().getSelectedItem());
+		windowNuevaPresentacion.showAndWait();
+		controllerNuevaPresentacion.getPresentacion().ifPresent(presentacion -> {
+			presentaciones.add(presentacion);
+			Main.notificar("Se agregó una nueva presentación");
+		});
 	}
 	
 	@FXML
