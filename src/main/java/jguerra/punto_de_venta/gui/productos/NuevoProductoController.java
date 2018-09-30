@@ -70,7 +70,8 @@ public class NuevoProductoController {
 					 fieldMarca.getText().trim().toUpperCase());
 			 try {
 				int id = dao.insert(producto);
-				producto = new Producto(id,producto.getNombre(),producto.getMarca());
+				producto.setId(id);
+				//producto = new Producto(id,producto.getNombre(),producto.getMarca());
 				btnGuardar.getScene().getWindow().hide();
 			} catch (SQLException e) {
 				producto = null;
