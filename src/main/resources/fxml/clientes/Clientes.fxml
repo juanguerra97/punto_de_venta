@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ContextMenu?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import org.controlsfx.control.textfield.CustomTextField?>
+
+
+<VBox prefHeight="450.0" prefWidth="750.0" spacing="5.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.141" fx:controller="jguerra.punto_de_venta.gui.clientes.ClientesController">
+   <padding>
+      <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+   </padding>
+   <children>
+      <Label text="Clientes" />
+      <TableView fx:id="tablaClientes" VBox.vgrow="ALWAYS">
+        <columns>
+          <TableColumn fx:id="colNit" editable="false" minWidth="100.0" prefWidth="-1.0" sortable="false" text="NIT" />
+          <TableColumn fx:id="colNombre" editable="false" minWidth="200.0" prefWidth="-1.0" text="Nombre" />
+            <TableColumn fx:id="colApellido" editable="false" minWidth="200.0" prefWidth="-1.0" text="Apellido" />
+            <TableColumn fx:id="colTelefono" editable="false" minWidth="120.0" prefWidth="-1.0" sortable="false" text="Teléfono" />
+        </columns>
+         <contextMenu>
+            <ContextMenu onShown="#onTablaClientesContextMenuShown">
+              <items>
+                <MenuItem fx:id="itemEliminar" disable="true" mnemonicParsing="false" onAction="#onEliminarCliente" text="Eliminar" />
+                  <MenuItem fx:id="itemDeseleccionar" disable="true" mnemonicParsing="false" onAction="#onDeseleccionarCliente" text="Deseleccionar" />
+              </items>
+            </ContextMenu>
+         </contextMenu>
+      </TableView>
+      <HBox spacing="5.0">
+         <children>
+            <CustomTextField fx:id="fieldNit" maxWidth="150.0" promptText="NIT" HBox.hgrow="ALWAYS" />
+            <CustomTextField fx:id="fieldNombre" maxWidth="250.0" promptText="Nombre(s)" HBox.hgrow="ALWAYS" />
+            <CustomTextField fx:id="fieldApellido" maxWidth="250.0" promptText="Apellido(s)" HBox.hgrow="ALWAYS" />
+            <CustomTextField fx:id="fieldTelefono" promptText="Teléfono" />
+            <Button fx:id="boton" disable="true" mnemonicParsing="false" onAction="#onBoton" text="Guardar" />
+         </children>
+      </HBox>
+   </children>
+</VBox>
