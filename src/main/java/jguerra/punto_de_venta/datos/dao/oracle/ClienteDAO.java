@@ -68,8 +68,8 @@ public class ClienteDAO {
 		} catch (SQLException e) {
 			String msg = e.getMessage();
 			if(msg != null)
-				if(msg.matches("^unique.*"))
-					throw new SQLException("El DPI del cliente se encuentra duplicado",e);
+				if(msg.equals("ORA-00001: unique constraint (ADMIN_PV.SYS_C007479) violated\n"))
+					throw new SQLException("El NIT del cliente se encuentra duplicado",e);
 			throw new SQLException("Error en la consulta",e);
 		}
 	}
