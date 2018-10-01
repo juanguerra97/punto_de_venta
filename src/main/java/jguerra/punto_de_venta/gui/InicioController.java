@@ -33,11 +33,16 @@ public class InicioController {
     private void initialize() {
     	
     	try {
-			tabSucursales.setContent(FXMLLoader.load(getClass().getResource("/fxml/sucursales/Sucursales.fxml")));
+			tabSucursales.setContent(FXMLLoader.load(getClass()
+					.getResource("/fxml/sucursales/Sucursales.fxml")));
 			
-			FXMLLoader loaderProd = new FXMLLoader(getClass().getResource("/fxml/productos/Productos.fxml"));
+			FXMLLoader loaderProd = new FXMLLoader(getClass()
+					.getResource("/fxml/productos/Productos.fxml"));
 			tabProductos.setContent(loaderProd.load());
 			controllerProductos = loaderProd.getController();
+			
+			tabProveedores.setContent(FXMLLoader.load(getClass()
+					.getResource("/fxml/proveedores/Proveedores.fxml")));
 			
     	} catch (IOException e) {
 			e.printStackTrace();
