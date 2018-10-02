@@ -1,10 +1,14 @@
 package jguerra.punto_de_venta.gui.compras;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.MenuItem;
@@ -12,10 +16,13 @@ import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import jguerra.punto_de_venta.datos.dao.oracle.DAOManager;
 import jguerra.punto_de_venta.datos.modelo.Compra;
 import jguerra.punto_de_venta.datos.modelo.DetalleCompra;
+import jguerra.punto_de_venta.gui.Main;
 
 public class ComprasController {
 	
@@ -74,6 +81,9 @@ public class ComprasController {
 	
 	private ObservableList<Compra> compras;
 	private ObservableList<DetalleCompra> detalles;
+	
+	private Stage windowNuevaCompra;
+	private NuevaCompraController controllerNuevaCompra;
 	
 	private void cargarCompras(final LocalDate fecha) {
 		manager.compra().ifPresent(dao -> {
@@ -135,6 +145,21 @@ public class ComprasController {
 			System.out.println("Changed");
 		});
 		
+		try {
+			FXMLLoader loaderNuevaCompra = new FXMLLoader(getClass()
+					.getResource("/fxml/compras/NuevaCompra.fxml"));
+			Scene sceneNuevaCompra = new Scene(loaderNuevaCompra.load(),750,450);
+			controllerNuevaCompra = loaderNuevaCompra.getController();
+			windowNuevaCompra = new Stage();
+			windowNuevaCompra.setScene(sceneNuevaCompra);
+			windowNuevaCompra.setTitle("Nueva Compra");
+			windowNuevaCompra.setMinWidth(750);
+			windowNuevaCompra.setMinHeight(450);
+			windowNuevaCompra.initModality(Modality.APPLICATION_MODAL);
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
+		
 		cargarCompras(null);
 		
 	}
@@ -147,7 +172,16 @@ public class ComprasController {
 	
 	@FXML
 	private void onNuevaCompra(ActionEvent event) {
-		
+		controllerNuevaCompra.reset();
+		controllerNuevaCompra.cargarProveedores();
+		controllerNuevaCompra.cargarProductos();
+		windowNuevaCompra.showAndWait();
+		controllerNuevaCompra.getCompra().ifPresent(compra -> {
+			if(!checkFiltrar.isSelected() || 
+					pickerFecha.getValue().equals(compra.getFecha()))
+				compras.add(compra);
+			Main.notificar("Se ingresó una nueva compra");
+		});
 	}
 	
 	@FXML
