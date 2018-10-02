@@ -10,6 +10,7 @@ import java.util.Optional;
 
 import jguerra.punto_de_venta.datos.dao.oracle.sequences.SeqIdPresentacion;
 import jguerra.punto_de_venta.datos.modelo.Presentacion;
+import jguerra.punto_de_venta.datos.modelo.Sucursal;
 
 public class PresentacionDAO {
 	
@@ -17,6 +18,9 @@ public class PresentacionDAO {
 			+ " WHERE id_presentacion = ?";
 	public static final String SELECT_ALL_BY_PRODUCTO = "SELECT id_presentacion,nombre,precio,costo"
 			+ " FROM presentaciones WHERE id_producto = ?";
+	public static final String SELECT_SUCURSALES_PRESENTACION = "SELECT id_sucursal,sucursales.nombre"
+			+ " FROM (SELECT id_sucursal FROM presentaciones NATURAL JOIN existencias"
+			+ " WHERE id_presentacion = ?) NATURAL JOIN sucursales";
 	public static final String INSERT = "INSERT INTO presentaciones(id_presentacion,id_producto,nombre"
 			+ ",precio,costo) VALUES(?,?,?,?,?)";
 	public static final String DELETE = "DELETE FROM presentaciones WHERE id_presentacion = ?";
@@ -58,6 +62,20 @@ public class PresentacionDAO {
 			e.printStackTrace();
 		}		
 		return presentaciones;
+	}
+	
+	public List<Sucursal> selectSucursalesPresentacion(final int idPresentacion){
+		List<Sucursal> sucursales = new LinkedList<>();
+		try(PreparedStatement st = conexion.prepareStatement(SELECT_SUCURSALES_PRESENTACION)){
+			st.setInt(1, idPresentacion);
+			ResultSet rs = st.executeQuery();
+			while(rs.next())
+				sucursales.add(new Sucursal(rs.getInt("id_sucursal"),
+						rs.getString("nombre")));
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		return sucursales;
 	}
 	
 	public int insert(final Presentacion presentacion) throws SQLException {
