@@ -22,6 +22,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -80,6 +82,15 @@ public class ProductosController {
 
     @FXML
     private TableColumn<Existencia, Integer> colCantidadExistencia;
+    
+    @FXML
+    private VBox boxExistencias;
+    
+    @FXML
+    private HBox boxNombreSucursal;
+
+    @FXML
+    private Label labelNombreSucursal;
 
     @FXML
     private MenuItem itemNuevaExistencia;
@@ -257,6 +268,18 @@ public class ProductosController {
 			}
 		});
 		
+		tablaExistencias.getSelectionModel().selectedItemProperty()
+			.addListener((ob,oldSelection,newSelection)->{
+			boxExistencias.getChildren().remove(boxNombreSucursal);
+			if(newSelection != null)
+				manager.sucursal().ifPresent(dao -> {
+					dao.select(newSelection.getIdSucursal()).ifPresent(suc -> {
+						labelNombreSucursal.setText(suc.getNombre());
+						boxExistencias.getChildren().add(boxNombreSucursal);
+					});
+				});
+		});
+		
 		try {
 			FXMLLoader loaderNuevoProducto = new FXMLLoader(getClass().getResource("/fxml/productos/NuevoProducto.fxml"));
 			Scene sceneNuevoProducto = new Scene(loaderNuevoProducto.load(),380,200);
@@ -290,6 +313,8 @@ public class ProductosController {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
+		boxExistencias.getChildren().remove(boxNombreSucursal);
 		
 		cargarProductos();
 		
