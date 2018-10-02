@@ -118,6 +118,7 @@ public class NuevaCompraController {
     	labelTotal.setText("Q.0");
     	pickerFecha.setValue(LocalDate.now());
     	choiceProveedor.getSelectionModel().clearSelection();
+    	choiceProveedor.getItems().clear();
     	tablaProductos.getSelectionModel().clearSelection();
     	detalles.clear();
     	spinnerValueFactory.setValue(1);

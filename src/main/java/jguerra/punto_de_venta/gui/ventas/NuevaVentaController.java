@@ -116,7 +116,9 @@ public class NuevaVentaController {
     	labelTotal.setText("Q.0");
     	pickerFecha.setValue(LocalDate.now());
     	choiceSucursal.getSelectionModel().clearSelection();
+    	choiceSucursal.getItems().clear();
     	choiceCliente.getSelectionModel().clearSelection();
+    	choiceCliente.getItems().clear();
     	tablaProductos.getSelectionModel().clearSelection();
     	tablaProductos.setDisable(true);
 		listaPresentaciones.setDisable(true);
