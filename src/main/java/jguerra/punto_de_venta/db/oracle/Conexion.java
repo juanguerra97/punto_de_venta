@@ -13,7 +13,7 @@ public final class Conexion {
 	private static Connection conexion = null;
 	
 	public static Connection get() throws SQLException {
-		if(conexion == null) {
+		if(conexion == null || !conexion.isValid(100)) {
 			try {
 				conexion = DriverManager.getConnection(URL, USERNAME, PASSWORD);
 			} catch (SQLException e) {

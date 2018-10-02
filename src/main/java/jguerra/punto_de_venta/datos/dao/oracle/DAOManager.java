@@ -30,7 +30,7 @@ public class DAOManager {
 	
 	public Optional<ClienteDAO> cliente() {
 		try {
-			if(conexion == null || conexion.isClosed()) {
+			if(conexion == null || !conexion.isValid(80)) {
 				conexion = Conexion.get();
 				daoCliente = new ClienteDAO(conexion);
 			}else if(daoCliente == null)
@@ -46,7 +46,7 @@ public class DAOManager {
 	
 	public Optional<CompraDAO> compra() {
 		try {
-			if(conexion == null || conexion.isClosed()) {
+			if(conexion == null || !conexion.isValid(80)) {
 				conexion = Conexion.get();
 				daoCompra = new CompraDAO(conexion);
 			}else if(daoCompra == null)
@@ -62,7 +62,7 @@ public class DAOManager {
 	
 	public Optional<DetalleCompraDAO> detalleCompra() {
 		try {
-			if(conexion == null || conexion.isClosed()) {
+			if(conexion == null || !conexion.isValid(80)) {
 				conexion = Conexion.get();
 				daoDetalleCompra = new DetalleCompraDAO(conexion);
 			}else if(daoDetalleCompra == null)
@@ -78,7 +78,7 @@ public class DAOManager {
 	
 	public Optional<DetalleVentaDAO> detalleVenta() {
 		try {
-			if(conexion == null || conexion.isClosed()) {
+			if(conexion == null || !conexion.isValid(80)) {
 				conexion = Conexion.get();
 				daoDetalleVenta = new DetalleVentaDAO(conexion);
 			}else if(daoDetalleVenta == null)
@@ -94,7 +94,7 @@ public class DAOManager {
 	
 	public Optional<ExistenciaDAO> existencia() {
 		try {
-			if(conexion == null || conexion.isClosed()) {
+			if(conexion == null || !conexion.isValid(80)) {
 				conexion = Conexion.get();
 				daoExistencia = new ExistenciaDAO(conexion);
 			}else if(daoExistencia == null)
@@ -110,7 +110,7 @@ public class DAOManager {
 	
 	public Optional<PresentacionDAO> presentacion() {
 		try {
-			if(conexion == null || conexion.isClosed()) {
+			if(conexion == null || !conexion.isValid(80)) {
 				conexion = Conexion.get();
 				daoPresentacion = new PresentacionDAO(conexion);
 			}else if(daoPresentacion == null)
@@ -126,7 +126,7 @@ public class DAOManager {
 	
 	public Optional<ProductoDAO> producto() {
 		try {
-			if(conexion == null || conexion.isClosed()) {
+			if(conexion == null || !conexion.isValid(80)) {
 				conexion = Conexion.get();
 				daoProducto = new ProductoDAO(conexion);
 			}else if(daoProducto == null)
@@ -142,7 +142,7 @@ public class DAOManager {
 	
 	public Optional<ProveedorDAO> proveedor() {
 		try {
-			if(conexion == null || conexion.isClosed()) {
+			if(conexion == null || !conexion.isValid(80)) {
 				conexion = Conexion.get();
 				daoProveedor = new ProveedorDAO(conexion);
 			}else if(daoProveedor == null)
@@ -158,7 +158,7 @@ public class DAOManager {
 	
 	public Optional<SucursalDAO> sucursal() {
 		try {
-			if(conexion == null || conexion.isClosed()) {
+			if(conexion == null || !conexion.isValid(80)) {
 				conexion = Conexion.get();
 				daoSucursal = new SucursalDAO(conexion);
 			}else if(daoSucursal == null)
@@ -174,7 +174,7 @@ public class DAOManager {
 	
 	public Optional<VentaDAO> venta() {
 		try {
-			if(conexion == null || conexion.isClosed()) {
+			if(conexion == null || !conexion.isValid(80)) {
 				conexion = Conexion.get();
 				daoVenta = new VentaDAO(conexion);
 			}else if(daoVenta == null)
