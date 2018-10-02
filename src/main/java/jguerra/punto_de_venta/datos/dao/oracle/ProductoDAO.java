@@ -138,7 +138,10 @@ public class ProductoDAO {
 	public void update(final Producto producto) throws SQLException {
 		assert producto != null;
 		try(PreparedStatement st = conexion.prepareStatement(UPDATE)){
-			
+			st.setString(1, producto.getNombre());
+			st.setString(2, producto.getMarca());
+			st.setInt(3, producto.getId());
+			st.executeUpdate();
 		} catch (SQLException e) {
 			String msg = e.getMessage();
 			if(msg != null)
