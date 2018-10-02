@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
+import jguerra.punto_de_venta.datos.modelo.DetalleCompra;
 import jguerra.punto_de_venta.datos.modelo.Existencia;
 
 public class ExistenciaDAO {
@@ -16,13 +17,19 @@ public class ExistenciaDAO {
 			+ " AND id_sucursal = ?";
 	public static final String SELECT_ALL_BY_PRESENTACION = "SELECT id_sucursal,cantidad"
 			+ " FROM existencias WHERE id_presentacion = ?";
+	public static final String SELECT_BY_DETALLE_COMPRA = "SELECT id_presentacion,id_sucursal,cantidad"
+			+ " FROM (SELECT id_presentacion,id_sucursal,cantidad FROM (SELECT id_presentacion"
+			+ " FROM (SELECT id_producto FROM productos WHERE nombre = ? AND marca = ?)"
+			+ " NATURAL JOIN presentaciones WHERE presentaciones.nombre = ?)"
+			+ " NATURAL JOIN existencias) NATURAL JOIN (SELECT id_sucursal FROM sucursales"
+			+ " WHERE nombre = ?)";
 	public static final String INSERT = "INSERT INTO existencias(id_presentacion,"
 			+ "id_sucursal,cantidad) VALUES(?,?,?)";
 	public static final String UPDATE = "UPDATE existencias SET cantidad = ?"
 			+ " WHERE id_presentacion = ? AND id_sucursal = ?";
 	public static final String DELETE = "DELETE FROM existencias WHERE id_presentacion = ?"
 			+ " AND id_sucursal = ?";
-
+	
 	private Connection conexion;
 	
 	public ExistenciaDAO(final Connection conexion) {
@@ -59,6 +66,24 @@ public class ExistenciaDAO {
 			e.printStackTrace();
 		}
 		return existencias;
+	}
+	
+	public Optional<Existencia> selectByDetalle(final DetalleCompra detalle){
+		assert detalle != null;
+		Optional<Existencia> opt = Optional.empty();
+		try(PreparedStatement st = conexion.prepareStatement(SELECT_BY_DETALLE_COMPRA)){
+			st.setString(1, detalle.getNombreProducto());
+			st.setString(2, detalle.getMarcaProducto());
+			st.setString(3, detalle.getPresentacionProducto());
+			st.setString(4, detalle.getNombreSucursal());
+			ResultSet rs = st.executeQuery();
+			if(rs.next())
+				opt = Optional.of(new Existencia(rs.getInt("id_presentacion"), 
+						rs.getInt("id_sucursal"), rs.getInt("cantidad")));
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return opt;
 	}
 	
 	public void insert(final Existencia existencia) throws SQLException {
