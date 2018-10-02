@@ -97,6 +97,17 @@ public class ProductosController {
     private Stage windowNuevaExistencia;
     private NuevaExistenciaController controllerNuevaExistencia;
     
+    public void updateExistencias() {
+    	if(tablaProductos.getSelectionModel().getSelectedItem() != null) {
+    		final Presentacion presentacion = tablaPresentaciones
+    				.getSelectionModel().getSelectedItem();
+    		if(presentacion != null) {
+    			existencias.clear();
+    			cargarExistencias(presentacion);
+    		}
+    	}
+    }
+    
     private void cargarProductos() {
     	manager.producto().ifPresent(dao -> {
     		productos.setAll(dao.selectAll());
