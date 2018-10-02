@@ -9,7 +9,9 @@ import java.util.List;
 import java.util.Optional;
 
 import jguerra.punto_de_venta.datos.modelo.DetalleCompra;
+import jguerra.punto_de_venta.datos.modelo.DetalleVenta;
 import jguerra.punto_de_venta.datos.modelo.Existencia;
+import jguerra.punto_de_venta.datos.modelo.Sucursal;
 
 public class ExistenciaDAO {
 	
@@ -17,7 +19,7 @@ public class ExistenciaDAO {
 			+ " AND id_sucursal = ?";
 	public static final String SELECT_ALL_BY_PRESENTACION = "SELECT id_sucursal,cantidad"
 			+ " FROM existencias WHERE id_presentacion = ?";
-	public static final String SELECT_BY_DETALLE_COMPRA = "SELECT id_presentacion,id_sucursal,cantidad"
+	public static final String SELECT_BY_DETALLE = "SELECT id_presentacion,id_sucursal,cantidad"
 			+ " FROM (SELECT id_presentacion,id_sucursal,cantidad FROM (SELECT id_presentacion"
 			+ " FROM (SELECT id_producto FROM productos WHERE nombre = ? AND marca = ?)"
 			+ " NATURAL JOIN presentaciones WHERE presentaciones.nombre = ?)"
@@ -71,11 +73,31 @@ public class ExistenciaDAO {
 	public Optional<Existencia> selectByDetalle(final DetalleCompra detalle){
 		assert detalle != null;
 		Optional<Existencia> opt = Optional.empty();
-		try(PreparedStatement st = conexion.prepareStatement(SELECT_BY_DETALLE_COMPRA)){
+		try(PreparedStatement st = conexion.prepareStatement(SELECT_BY_DETALLE)){
 			st.setString(1, detalle.getNombreProducto());
 			st.setString(2, detalle.getMarcaProducto());
 			st.setString(3, detalle.getPresentacionProducto());
 			st.setString(4, detalle.getNombreSucursal());
+			ResultSet rs = st.executeQuery();
+			if(rs.next())
+				opt = Optional.of(new Existencia(rs.getInt("id_presentacion"), 
+						rs.getInt("id_sucursal"), rs.getInt("cantidad")));
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return opt;
+	}
+	
+	public Optional<Existencia> selectByDetalle(final DetalleVenta detalle, 
+			final Sucursal sucursal){
+		assert detalle != null;
+		assert sucursal != null;
+		Optional<Existencia> opt = Optional.empty();
+		try(PreparedStatement st = conexion.prepareStatement(SELECT_BY_DETALLE)){
+			st.setString(1, detalle.getNombreProducto());
+			st.setString(2, detalle.getMarcaProducto());
+			st.setString(3, detalle.getPresentacionProducto());
+			st.setString(4, sucursal.getNombre());
 			ResultSet rs = st.executeQuery();
 			if(rs.next())
 				opt = Optional.of(new Existencia(rs.getInt("id_presentacion"), 
