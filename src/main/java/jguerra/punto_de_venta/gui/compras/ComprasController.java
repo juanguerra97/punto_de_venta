@@ -142,7 +142,6 @@ public class ComprasController {
 		
 		pickerFecha.valueProperty().addListener((ob,oldValue,newValue)->{
 			cargarCompras(newValue);
-			System.out.println("Changed");
 		});
 		
 		try {
