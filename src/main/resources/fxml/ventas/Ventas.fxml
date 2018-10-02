@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ContextMenu?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.141" fx:controller="jguerra.punto_de_venta.gui.ventas.VentasController">
+	<center>
+            <SplitPane dividerPositions="0.4" BorderPane.alignment="CENTER">
+               <items>
+                  <VBox maxWidth="600.0" minWidth="295.0" spacing="5.0">
+                     <padding>
+                        <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+                     </padding>
+                     <children>
+                        <HBox alignment="CENTER_LEFT" spacing="5.0">
+                           <children>
+                              <Label minWidth="50.0" text="Ventas" />
+                              <Separator minWidth="0.0" HBox.hgrow="ALWAYS" />
+                              <CheckBox fx:id="checkFiltrar" minWidth="55.0" mnemonicParsing="false" text="Filtrar" />
+                              <DatePicker fx:id="pickerFecha" disable="true" />
+                           </children>
+                        </HBox>
+                        <TableView fx:id="tablaVentas" VBox.vgrow="ALWAYS">
+                          <columns>
+                            <TableColumn fx:id="colNumero" editable="false" maxWidth="500.0" minWidth="50.0" prefWidth="-1.0" text="Número" />
+                            <TableColumn fx:id="colCliente" editable="false" maxWidth="500.0" minWidth="50.0" prefWidth="-1.0" text="Cliente" />
+                        <TableColumn fx:id="colSucursal" editable="false" maxWidth="500.0" minWidth="55.0" prefWidth="-1.0" text="Sucursal" />
+                              <TableColumn fx:id="colFecha" editable="false" maxWidth="3000.0" minWidth="60.0" prefWidth="-1.0" text="Fecha" />
+                              <TableColumn fx:id="colTotal" editable="false" maxWidth="3000.0" minWidth="60.0" prefWidth="-1.0" text="Total" />
+                          </columns>
+                           <columnResizePolicy>
+                              <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                           </columnResizePolicy>
+                           <contextMenu>
+                              <ContextMenu onShown="#onTablaVentasContextMenuShown">
+                                <items>
+                                    <MenuItem fx:id="itemNuevaVenta" mnemonicParsing="false" onAction="#onNuevaVenta" text="Nueva" />
+                                  <MenuItem fx:id="itemDeseleccionarVenta" disable="true" mnemonicParsing="false" onAction="#onDeseleccionarVenta" text="Deseleccionar" />
+                                </items>
+                              </ContextMenu>
+                           </contextMenu>
+                        </TableView>
+                     </children>
+                  </VBox>
+                  <VBox minWidth="440.0" spacing="5.0">
+                     <padding>
+                        <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+                     </padding>
+                     <children>
+                        <HBox spacing="5.0">
+                           <children>
+                              <Label text="Items" />
+                           </children>
+                        </HBox>
+                        <TableView fx:id="tablaDetalles" VBox.vgrow="ALWAYS">
+                          <columns>
+                              <TableColumn fx:id="colProducto" editable="false" minWidth="50.0" prefWidth="-1.0" text="Producto" />
+                              <TableColumn fx:id="colMarca" editable="false" maxWidth="3500.0" minWidth="40.0" prefWidth="-1.0" text="Marca" />
+                            <TableColumn fx:id="colPresentacion" editable="false" maxWidth="4000.0" minWidth="60.0" prefWidth="-1.0" text="Presentación" />
+                              <TableColumn fx:id="colCosto" editable="false" maxWidth="4000.0" minWidth="50.0" prefWidth="-1.0" text="Costo" />
+                            <TableColumn fx:id="colPrecio" editable="false" maxWidth="4000.0" minWidth="50.0" prefWidth="-1.0" text="Precio" />
+                              <TableColumn fx:id="colCantidad" editable="false" maxWidth="2000.0" minWidth="50.0" prefWidth="-1.0" text="Cantidad" />
+                          </columns>
+                           <columnResizePolicy>
+                              <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                           </columnResizePolicy>
+                           <contextMenu>
+                              <ContextMenu onShown="#onTablaDetallesContextMenuShown">
+                                <items>
+                                  <MenuItem fx:id="itemDeseleccionarDetalle" disable="true" mnemonicParsing="false" onAction="#onDeseleccionarDetalle" text="Deseleccionar" />
+                                </items>
+                              </ContextMenu>
+                           </contextMenu>
+                        </TableView>
+                     </children>
+                  </VBox>
+               </items>
+            </SplitPane>
+         </center>
+</BorderPane>

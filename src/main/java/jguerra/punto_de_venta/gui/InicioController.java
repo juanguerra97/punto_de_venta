@@ -54,6 +54,9 @@ public class InicioController {
 			tabCompras.setContent(FXMLLoader.load(getClass()
 					.getResource("/fxml/compras/Compras.fxml")));
 			
+			tabVentas.setContent(FXMLLoader.load(getClass()
+					.getResource("/fxml/ventas/Ventas.fxml")));
+			
     	} catch (IOException e) {
 			e.printStackTrace();
 		}
