@@ -4,16 +4,24 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 
+import org.controlsfx.control.table.TableRowExpanderColumn;
+import org.controlsfx.control.textfield.TextFields;
+
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -97,6 +105,8 @@ public class ProductosController {
     private Stage windowNuevaExistencia;
     private NuevaExistenciaController controllerNuevaExistencia;
     
+    private TableRowExpanderColumn.TableRowDataFeatures<Producto> param = null;
+    
     public void updateExistencias() {
     	if(tablaProductos.getSelectionModel().getSelectedItem() != null) {
     		final Presentacion presentacion = tablaPresentaciones
@@ -125,7 +135,85 @@ public class ProductosController {
     		existencias.setAll(dao.selectAllByPresentacion(presentacion.getId()));
     	});
     }
+    
+    private GridPane createEditorProducto(TableRowExpanderColumn.TableRowDataFeatures<Producto> param) {
+        
+    	param.expandedProperty().addListener((ob,viejo,nuevo)->{
+    		if(!nuevo) {
+    			ProductosController.this.param = null;
+    		}
+    	});
+    	
+    	if(ProductosController.this.param != null)
+    		if(ProductosController.this.param.isExpanded())
+    			ProductosController.this.param.toggleExpanded();
+    	
+    	tablaProductos.requestFocus();
+    	tablaProductos.getSelectionModel().clearSelection();
+    	ProductosController.this.param = param;
+    	
+    	GridPane editor = new GridPane();
+        editor.setPadding(new Insets(10));
+        editor.setHgap(10);
+        editor.setVgap(5);
+
+        Producto producto = param.getValue();
+        tablaProductos.getSelectionModel().select(producto);
+
+        TextField fieldNombre = TextFields.createClearableTextField(); 
+        TextField fieldMarca = TextFields.createClearableTextField();
+        
+        fieldNombre.setText(producto.getNombre());
+        fieldMarca.setText(producto.getMarca());
+
+        editor.addRow(0, new Label("Nombre"), fieldNombre);
+        editor.addRow(1, new Label("marca"), fieldMarca);
+
+        Button btnActualizar = new Button("Actualizar");
+        btnActualizar.setOnAction(event -> {
+        	final Producto actualizado = new Producto(producto.getId(),
+        			fieldNombre.getText().trim().toUpperCase(),
+        			fieldMarca.getText().trim().toUpperCase());
+        	manager.producto().ifPresent(dao -> {
+        		try {
+					dao.update(actualizado);
+					producto.setNombre(actualizado.getNombre());
+					producto.setMarca(actualizado.getMarca());
+					Main.notificar("Se actualizó un producto");
+					tablaProductos.requestFocus();
+					param.toggleExpanded();
+				} catch (SQLException e) {
+					Main.notificar(e.getMessage());
+					fieldNombre.selectAll();
+					fieldNombre.requestFocus();
+					e.printStackTrace();
+				}
+        	});            
+        });
+        btnActualizar.setDisable(true);
+        
+        fieldNombre.textProperty().addListener((ob,oldText,newText)->{
+        	btnActualizar.setDisable(newText.trim().isEmpty() ||
+        			fieldMarca.getText().trim().isEmpty());
+        });
+        
+        fieldMarca.textProperty().addListener((ob,oldText,newText)->{
+        	btnActualizar.setDisable(newText.trim().isEmpty() ||
+        			fieldNombre.getText().trim().isEmpty());
+        });
+
+        Button btnCancelar = new Button("Cancelar");
+        btnCancelar.setOnAction(event -> {
+        	tablaProductos.requestFocus();
+        	param.toggleExpanded();
+        });
+
+        editor.addRow(2, btnActualizar, btnCancelar);
+
+        return editor;
+    }
 	
+	@SuppressWarnings("unchecked")
 	@FXML
 	private void initialize() {
 		
@@ -138,6 +226,11 @@ public class ProductosController {
 		colIdProducto.setCellValueFactory(new PropertyValueFactory<Producto,Integer>("id"));
 		colNombreProducto.setCellValueFactory(new PropertyValueFactory<Producto,String>("nombre"));
 		colMarcaProducto.setCellValueFactory(new PropertyValueFactory<Producto,String>("marca"));
+		
+		TableRowExpanderColumn<Producto> expanderColumn = new TableRowExpanderColumn<>(this::createEditorProducto);
+		expanderColumn.setMinWidth(25);
+		expanderColumn.setMaxWidth(25);
+		tablaProductos.getColumns().setAll(expanderColumn,colIdProducto,colNombreProducto,colMarcaProducto);
 		
 		tablaPresentaciones.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 		colNombrePresentacion.setCellValueFactory(new PropertyValueFactory<Presentacion,String>("nombre"));
