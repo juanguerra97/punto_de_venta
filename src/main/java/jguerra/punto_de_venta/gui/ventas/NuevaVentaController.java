@@ -5,6 +5,8 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Optional;
 
+import org.controlsfx.control.textfield.CustomTextField;
+
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -29,6 +31,8 @@ import jguerra.punto_de_venta.datos.modelo.Presentacion;
 import jguerra.punto_de_venta.datos.modelo.Producto;
 import jguerra.punto_de_venta.datos.modelo.Sucursal;
 import jguerra.punto_de_venta.datos.modelo.Venta;
+import jguerra.punto_de_venta.datos.validacion.Validacion;
+import jguerra.punto_de_venta.gui.Fields;
 import jguerra.punto_de_venta.gui.Main;
 
 public class NuevaVentaController {
@@ -38,6 +42,9 @@ public class NuevaVentaController {
 
 	@FXML
 	private ChoiceBox<Sucursal> choiceSucursal;
+	
+	@FXML
+    private CustomTextField fieldNit;
 
 	@FXML
 	private ChoiceBox<Cliente> choiceCliente;
@@ -224,6 +231,10 @@ public class NuevaVentaController {
     	
     	choiceCliente.getSelectionModel().selectedItemProperty()
     		.addListener((ob,oldSeleccion,newSeleccion)->{
+    		if(newSeleccion != null) {
+    			if(!fieldNit.getText().trim().equalsIgnoreCase(newSeleccion.getNit()))
+    				fieldNit.setText(newSeleccion.getNit());
+    		}
     		btnListo.setDisable(newSeleccion == null || detalles.size() <= 0
     				|| choiceSucursal.getSelectionModel().getSelectedItem() == null);
     	});
@@ -237,6 +248,28 @@ public class NuevaVentaController {
     	
     	spinnerValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 1000000, 1, 1);
     	spinnerCantidad.setValueFactory(spinnerValueFactory);
+    	
+    	Fields.setupClearButtonField(fieldNit);
+    	
+    	fieldNit.textProperty().addListener((ob,oldText,newText)->{
+    		boolean nitValido = Validacion.validarNit(newText.trim());
+    		boolean existeCliente = true;
+    		final Cliente c = choiceCliente.getValue();
+    		if(c == null || !c.getNit().equalsIgnoreCase(newText.trim())) {
+    			if(nitValido) {
+        			Optional<Cliente> opt = choiceCliente.getItems().stream()
+        				.filter(cli -> newText.equals(cli.getNit())).findFirst();
+        			existeCliente = opt.isPresent();
+        			opt.ifPresent(cliente -> choiceCliente.getSelectionModel()
+        				.select(cliente));
+        		}
+        		if(!nitValido || !existeCliente)
+        			choiceCliente.getSelectionModel().clearSelection();
+    		}
+    		
+    		btnListo.setDisable(!nitValido || !existeCliente || detalles.size() <= 0
+    				|| choiceSucursal.getSelectionModel().getSelectedItem() == null);
+    	});
     	
     }
     
