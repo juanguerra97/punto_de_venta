@@ -133,6 +133,8 @@ public class NuevaCompraController {
     	detalles.clear();
     	spinnerValueFactory.setValue(1);
     	btnListo.setDisable(true);
+    	fieldFiltroProductos.clear();
+    	choiceProveedor.requestFocus();
     }
     
     public Optional<Compra> getCompra(){
