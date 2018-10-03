@@ -11,11 +11,14 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -25,6 +28,9 @@ import jguerra.punto_de_venta.datos.modelo.Venta;
 import jguerra.punto_de_venta.gui.Main;
 
 public class VentasController {
+	
+	@FXML
+    private VBox boxVentas;
 	
 	@FXML
     private CheckBox checkFiltrar;
@@ -55,6 +61,15 @@ public class VentasController {
 
     @FXML
     private MenuItem itemDeseleccionarVenta;
+    
+    @FXML
+    private HBox boxClienteSucursal;
+
+    @FXML
+    private Label labelCliente;
+
+    @FXML
+    private Label labelSucursal;
 
     @FXML
     private TableView<DetalleVenta> tablaDetalles;
@@ -120,9 +135,21 @@ public class VentasController {
 		colTotal.setCellValueFactory(new PropertyValueFactory<>("total"));
 		tablaVentas.getSelectionModel().selectedItemProperty().addListener(
 				(ob,oldSelection,newSelection)->{
-			if(newSelection != null)
+			boxVentas.getChildren().remove(boxClienteSucursal);
+			if(newSelection != null) {
 				cargarDetallesVenta(newSelection);
-			else
+				manager.cliente().ifPresent(dao -> {
+					dao.select(newSelection.getNitCliente()).ifPresent(cliente -> {
+						labelCliente.setText(cliente.getNombre() + " " + cliente.getApellido());
+						manager.sucursal().ifPresent(daoSuc -> {
+							daoSuc.select(newSelection.getIdSucursal()).ifPresent(suc -> {
+								labelSucursal.setText(suc.getNombre());
+								boxVentas.getChildren().add(boxClienteSucursal);
+							});
+						});
+					});
+				});
+			}else
 				detalles.clear();
 		});
 		
@@ -162,6 +189,8 @@ public class VentasController {
 		}catch(IOException e) {
 			e.printStackTrace();
 		}
+		
+		boxVentas.getChildren().remove(boxClienteSucursal);
 		
 		cargarVentas(null);
 		
