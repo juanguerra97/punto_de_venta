@@ -1,9 +1,12 @@
 package jguerra.punto_de_venta.gui.productos;
 
 import java.sql.SQLException;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
 
 import org.controlsfx.control.textfield.CustomTextField;
+import org.controlsfx.control.textfield.TextFields;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -63,6 +66,14 @@ public class NuevoProductoController {
 		 fieldMarca.textProperty().addListener((observable,oldText,newText)->{
 			 btnGuardar.setDisable(newText.trim().isEmpty() || 
 					 fieldNombre.getText().trim().isEmpty());
+		 });
+		 
+		 TextFields.<String>bindAutoCompletion(fieldMarca, suggestionRequest -> {
+			 List<String> opciones = new LinkedList<>();
+			 manager.producto().ifPresent(dao -> {
+				 opciones.addAll(dao.selectMarcasByRegex("^" + suggestionRequest.getUserText().trim().toUpperCase() + ".*", 3));
+			 });
+			 return opciones;
 		 });
 		 
 	 }
