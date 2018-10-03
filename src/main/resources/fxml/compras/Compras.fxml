@@ -13,15 +13,15 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-
-<VBox prefHeight="450.0" prefWidth="750.0" spacing="5.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.141" fx:controller="jguerra.punto_de_venta.gui.compras.ComprasController">
+<VBox prefHeight="450.0" prefWidth="750.0" spacing="5.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jguerra.punto_de_venta.gui.compras.ComprasController">
    <children>
       <BorderPane VBox.vgrow="ALWAYS">
          <center>
             <SplitPane dividerPositions="0.4" BorderPane.alignment="CENTER">
                <items>
-                  <VBox maxWidth="600.0" minWidth="295.0" spacing="5.0">
+                  <VBox fx:id="boxCompras" maxWidth="600.0" minWidth="295.0" spacing="5.0">
                      <padding>
                         <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
                      </padding>
@@ -53,6 +53,15 @@
                               </ContextMenu>
                            </contextMenu>
                         </TableView>
+                        <HBox fx:id="boxNombreProveedor">
+                           <children>
+                              <Label fx:id="labelNombreProveedor" text="Proveedor">
+                                 <font>
+                                    <Font size="10.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </HBox>
                      </children>
                   </VBox>
                   <VBox minWidth="440.0" spacing="5.0">

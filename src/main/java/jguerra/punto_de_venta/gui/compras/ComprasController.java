@@ -11,11 +11,14 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -25,6 +28,9 @@ import jguerra.punto_de_venta.datos.modelo.DetalleCompra;
 import jguerra.punto_de_venta.gui.Main;
 
 public class ComprasController {
+	
+	@FXML
+    private VBox boxCompras;
 	
 	@FXML
 	private CheckBox checkFiltrar;
@@ -52,6 +58,12 @@ public class ComprasController {
 
 	@FXML
 	private MenuItem itemDeseleccionarCompra;
+	
+	@FXML
+	private HBox boxNombreProveedor;
+
+	@FXML
+	private Label labelNombreProveedor;
 
 	@FXML
 	private TableView<DetalleCompra> tablaDetalles;
@@ -116,9 +128,17 @@ public class ComprasController {
 		colTotal.setCellValueFactory(new PropertyValueFactory<>("total"));
 		tablaCompras.getSelectionModel().selectedItemProperty().addListener(
 				(ob,oldSelection,newSelection)->{
-			if(newSelection != null)
+			boxCompras.getChildren().remove(boxNombreProveedor);
+			if(newSelection != null) {
 				cargarDetallesCompra(newSelection);
-			else
+				manager.proveedor().ifPresent(dao -> {
+					dao.select(newSelection.getIdProveedor())
+						.ifPresent(prov -> {
+						labelNombreProveedor.setText(prov.getNombre());
+						boxCompras.getChildren().add(boxNombreProveedor);
+					});
+				});
+			}else
 				detalles.clear();
 		});
 		
@@ -158,6 +178,8 @@ public class ComprasController {
 		}catch(IOException e) {
 			e.printStackTrace();
 		}
+		
+		boxCompras.getChildren().remove(boxNombreProveedor);
 		
 		cargarCompras(null);
 		
