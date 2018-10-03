@@ -14,7 +14,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
@@ -52,6 +54,15 @@ public class ProductosController {
 
     @FXML
     private MenuItem itemDeseleccionarProducto;
+    
+    @FXML
+    private CheckMenuItem checkItemFiltrar;
+    
+    @FXML
+    private ListView<String> listaMarcas;
+    
+    @FXML
+    private MenuItem itemDeseleccionarMarca;
 
     @FXML
     private TableView<Presentacion> tablaPresentaciones;
@@ -104,6 +115,7 @@ public class ProductosController {
     private DAOManager manager;
     
     private ObservableList<Producto> productos;
+    private ObservableList<String> marcas;
     private ObservableList<Presentacion> presentaciones;
     private ObservableList<Existencia> existencias;
     
@@ -135,13 +147,28 @@ public class ProductosController {
     	});
     }
     
+    private void cargarProductos(final String marca) {
+    	assert marca != null;
+    	manager.producto().ifPresent(dao -> {
+    		productos.setAll(dao.selectAllByMarca(marca));
+    	});
+    }
+    
+    private void cargarMarcas() {
+    	manager.producto().ifPresent(dao -> {
+    		marcas.setAll(dao.selectAllMarcas());
+    	});
+    }
+    
     private void cargarPresentaciones(final Producto producto) {
+    	assert producto != null;
     	manager.presentacion().ifPresent(dao -> {
     		presentaciones.setAll(dao.selectAllByProducto(producto.getId()));
     	});
     }
     
     private void cargarExistencias(final Presentacion presentacion) {
+    	assert presentacion != null;
     	manager.existencia().ifPresent(dao -> {
     		existencias.setAll(dao.selectAllByPresentacion(presentacion.getId()));
     	});
@@ -230,6 +257,7 @@ public class ProductosController {
 		
 		manager = DAOManager.instance();
 		productos = tablaProductos.getItems();
+		marcas = listaMarcas.getItems();
 		presentaciones = tablaPresentaciones.getItems();
 		existencias = tablaExistencias.getItems();
 		
@@ -260,6 +288,17 @@ public class ProductosController {
 			}
 		});
 		
+		listaMarcas.getSelectionModel().selectedItemProperty()
+			.addListener((ob,oldSelection,newSelection)->{
+			boolean filtro = checkItemFiltrar.isSelected();
+			if(filtro) {
+				if(newSelection == null)
+					productos.clear();
+				else
+					cargarProductos(newSelection);
+			}
+		});
+		
 		tablaPresentaciones.getSelectionModel().selectedItemProperty().addListener((obj,viejo,nuevo)->{
 			if(nuevo != null) {
 				cargarExistencias(nuevo);
@@ -278,6 +317,18 @@ public class ProductosController {
 						boxExistencias.getChildren().add(boxNombreSucursal);
 					});
 				});
+		});
+		
+		checkItemFiltrar.selectedProperty().addListener((ob,oldValue,newValue)->{
+			if(newValue) {
+				final String marca = listaMarcas.getSelectionModel().getSelectedItem();
+				if(marca != null)
+					cargarProductos(marca);
+				else
+					productos.clear();
+			} else {
+				cargarProductos();
+			}
 		});
 		
 		try {
@@ -317,6 +368,7 @@ public class ProductosController {
 		boxExistencias.getChildren().remove(boxNombreSucursal);
 		
 		cargarProductos();
+		cargarMarcas();
 		
 	}
 	
@@ -332,8 +384,13 @@ public class ProductosController {
 		controllerNuevoProducto.reset();
 		windowNuevoProducto.showAndWait();
 		controllerNuevoProducto.getProducto().ifPresent(producto -> {
-			productos.add(producto);
-			productos.sort((prod1,prod2)->Integer.compare(prod1.getId(), prod2.getId()));
+			final String marca = listaMarcas.getSelectionModel().getSelectedItem();
+			if(!checkItemFiltrar.isSelected() || 
+					(marca != null && marca.equals(producto.getMarca())))
+				productos.add(producto);
+			if(!marcas.contains(producto.getMarca()))
+				marcas.add(producto.getMarca());
+			//productos.sort((prod1,prod2)->Integer.compare(prod1.getId(), prod2.getId()));
 			Main.notificar("Se ingresó un nuevo producto");
 		});
 	}
@@ -357,6 +414,17 @@ public class ProductosController {
 	@FXML
 	private void onDeseleccionarProducto(ActionEvent event) {
 		tablaProductos.getSelectionModel().clearSelection();
+	}
+	
+	@FXML
+	private void onMarcasContextMenuShown(WindowEvent event) {
+		itemDeseleccionarMarca.setDisable(
+				listaMarcas.getSelectionModel().getSelectedItem() == null);
+	}
+	
+	@FXML
+	private void onDeseleccionarMarca(ActionEvent event) {
+		listaMarcas.getSelectionModel().clearSelection();
 	}
 	
 	@FXML
