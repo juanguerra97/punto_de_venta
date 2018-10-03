@@ -34,6 +34,7 @@ import jguerra.punto_de_venta.datos.modelo.Venta;
 import jguerra.punto_de_venta.datos.validacion.Validacion;
 import jguerra.punto_de_venta.gui.Fields;
 import jguerra.punto_de_venta.gui.Main;
+import jguerra.punto_de_venta.gui.utils.FiltradorProductos;
 
 public class NuevaVentaController {
 	
@@ -75,6 +76,12 @@ public class NuevaVentaController {
 
 	@FXML
 	private MenuItem itemDeseleccionarDetalle;
+	
+	@FXML
+    private CustomTextField fieldFiltroProductos;
+
+    @FXML
+    private Button btnFiltrarProductos;
 
 	@FXML
 	private TableView<Producto> tablaProductos;
@@ -132,6 +139,8 @@ public class NuevaVentaController {
     	detalles.clear();
     	spinnerValueFactory.setValue(1);
     	btnListo.setDisable(true);
+    	fieldFiltroProductos.clear();
+    	choiceSucursal.requestFocus();
     }
     
     public Optional<Venta> getVenta(){
@@ -244,6 +253,7 @@ public class NuevaVentaController {
     		choiceSucursal.setDisable(newSelection != null);
     		tablaProductos.setDisable(newSelection == null);
     		listaPresentaciones.setDisable(newSelection == null);
+    		fieldFiltroProductos.setDisable(newSelection == null);
     	});
     	
     	spinnerValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 1000000, 1, 1);
@@ -269,6 +279,16 @@ public class NuevaVentaController {
     		
     		btnListo.setDisable(!nitValido || !existeCliente || detalles.size() <= 0
     				|| choiceSucursal.getSelectionModel().getSelectedItem() == null);
+    	});
+    	
+    	Fields.setupClearButtonField(fieldFiltroProductos);
+    	
+    	fieldFiltroProductos.setOnAction(e -> onFiltrarProductos(e));
+    	
+    	fieldFiltroProductos.textProperty().addListener((ob,oldText,newText)->{
+    		btnFiltrarProductos.setDisable(newText.trim().length() < 3);
+    		if(newText.trim().isEmpty())
+    			cargarProductos();
     	});
     	
     }
@@ -352,6 +372,14 @@ public class NuevaVentaController {
     @FXML
     private void onDeseleccionarDetalle(ActionEvent event) {
     	tablaDetalles.getSelectionModel().clearSelection();
+    }
+    
+    @FXML
+    private void onFiltrarProductos(ActionEvent event) {
+    	if(btnFiltrarProductos.isDisable())
+    		return;
+    	tablaProductos.getItems().setAll(
+    			FiltradorProductos.filtrar(fieldFiltroProductos.getText().trim()));
     }
     
     @FXML

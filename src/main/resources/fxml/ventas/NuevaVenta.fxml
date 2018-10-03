@@ -88,6 +88,12 @@
                   <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
                </padding>
                <children>
+                  <HBox alignment="CENTER_LEFT" spacing="3.0">
+                     <children>
+                        <CustomTextField fx:id="fieldFiltroProductos" disable="true" promptText="Ingrese filtro..." HBox.hgrow="ALWAYS" />
+                        <Button fx:id="btnFiltrarProductos" disable="true" mnemonicParsing="false" text="Filtrar" />
+                     </children>
+                  </HBox>
                   <TableView fx:id="tablaProductos" VBox.vgrow="ALWAYS">
                     <columns>
                       <TableColumn fx:id="colId" editable="false" maxWidth="3000.0" minWidth="50.0" prefWidth="-1.0" text="ID" />
