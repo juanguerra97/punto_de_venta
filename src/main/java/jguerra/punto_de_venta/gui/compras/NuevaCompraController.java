@@ -5,6 +5,8 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Optional;
 
+import org.controlsfx.control.textfield.CustomTextField;
+
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -28,7 +30,9 @@ import jguerra.punto_de_venta.datos.modelo.Presentacion;
 import jguerra.punto_de_venta.datos.modelo.Producto;
 import jguerra.punto_de_venta.datos.modelo.Proveedor;
 import jguerra.punto_de_venta.datos.modelo.Sucursal;
+import jguerra.punto_de_venta.gui.Fields;
 import jguerra.punto_de_venta.gui.Main;
+import jguerra.punto_de_venta.gui.utils.FiltradorProductos;
 
 public class NuevaCompraController {
 	
@@ -64,6 +68,12 @@ public class NuevaCompraController {
 
     @FXML
     private MenuItem itemDeseleccionarDetalle;
+    
+    @FXML
+    private CustomTextField fieldFiltroProductos;
+
+    @FXML
+    private Button btnFiltrarProductos;
 
     @FXML
     private TableView<Producto> tablaProductos;
@@ -215,6 +225,17 @@ public class NuevaCompraController {
     	spinnerValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 1000000, 1, 1);
     	spinnerCantidad.setValueFactory(spinnerValueFactory);
     	
+    	Fields.setupClearButtonField(fieldFiltroProductos);
+    	
+    	fieldFiltroProductos.setOnAction(e -> onFiltrarProductos(e));
+    	
+    	fieldFiltroProductos.textProperty().addListener((ob,oldText,newText)->{
+    		btnFiltrarProductos.setDisable(newText.trim().length() < 3);
+    		if(newText.trim().isEmpty()) {
+    			cargarProductos();
+    		}
+    	});
+    	
     }
     
     @FXML
@@ -296,6 +317,14 @@ public class NuevaCompraController {
     @FXML
     private void onDeseleccionarDetalle(ActionEvent event) {
     	tablaDetalles.getSelectionModel().clearSelection();
+    }
+    
+    @FXML
+    private void onFiltrarProductos(ActionEvent event) {
+    	if(btnFiltrarProductos.isDisable())
+    		return;
+    	tablaProductos.getItems().setAll(
+    			FiltradorProductos.filtrar(fieldFiltroProductos.getText().trim()));
     }
     
     @FXML

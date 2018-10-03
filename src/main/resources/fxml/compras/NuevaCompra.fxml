@@ -20,6 +20,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
+<?import org.controlsfx.control.textfield.CustomTextField?>
 
 <BorderPane prefHeight="450.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jguerra.punto_de_venta.gui.compras.NuevaCompraController">
    <center>
@@ -79,6 +80,12 @@
                   <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
                </padding>
                <children>
+                  <HBox alignment="CENTER_LEFT" spacing="3.0">
+                     <children>
+                        <CustomTextField fx:id="fieldFiltroProductos" promptText="Ingrese filtro..." HBox.hgrow="ALWAYS" />
+                        <Button fx:id="btnFiltrarProductos" disable="true" mnemonicParsing="false" onAction="#onFiltrarProductos" text="Filtrar" />
+                     </children>
+                  </HBox>
                   <TableView fx:id="tablaProductos" VBox.vgrow="ALWAYS">
                     <columns>
                       <TableColumn fx:id="colId" editable="false" maxWidth="3000.0" minWidth="50.0" prefWidth="-1.0" text="ID" />
