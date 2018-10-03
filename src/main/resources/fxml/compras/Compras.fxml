@@ -31,7 +31,7 @@
                               <Label minWidth="50.0" text="Compras" />
                               <Separator minWidth="0.0" HBox.hgrow="ALWAYS" />
                               <CheckBox fx:id="checkFiltrar" minWidth="55.0" mnemonicParsing="false" text="Filtrar" />
-                              <DatePicker fx:id="pickerFecha" disable="true" />
+                              <DatePicker fx:id="pickerFecha" disable="true" editable="false" />
                            </children>
                         </HBox>
                         <TableView fx:id="tablaCompras" VBox.vgrow="ALWAYS">
