@@ -16,14 +16,19 @@ public class ProductoDAO {
 	
 	public static final String SELECT_BY_ID = "SELECT nombre,marca FROM productos"
 			+ " WHERE id_producto = ?";
+	public static final String SELECT_BY_NOMBRE_MARCA = "SELECT id_producto"
+			+ " FROM productos WHERE nombre = ? AND marca = ? ORDER BY id_producto";
 	public static final String SELECT_ALL = "SELECT id_producto,nombre,marca FROM"
 			+ " productos ORDER BY id_producto,nombre";
-	public static final String SELECT_ALL_BY_MARCA = "SELECT id_producto,nombre,marca FROM"
-			+ " productos WHERE marca = ? ORDER BY id_producto,nombre";
-	public static final String SELECT_ALL_MARCAS = "SELECT DISTINCT(marca) AS nombre_marca"
-			+ " FROM productos ORDER BY nombre_marca";
-	public static final String SELECT_MARCAS_REGEX = "SELECT DISTINCT(marca) AS nombre_marca"
-			+ " FROM productos WHERE REGEXP_LIKE(marca,?) ORDER BY nombre_marca";
+	public static final String SELECT_ALL_BY_NOMBRE = "SELECT id_producto,marca"
+			+ " FROM productos WHERE nombre = ? ORDER BY id_producto";
+	public static final String SELECT_ALL_BY_MARCA = "SELECT id_producto,nombre,marca"
+			+ " FROM productos WHERE marca = ? ORDER BY id_producto,nombre";
+	public static final String SELECT_ALL_MARCAS = "SELECT DISTINCT(marca)"
+			+ " AS nombre_marca FROM productos ORDER BY nombre_marca";
+	public static final String SELECT_MARCAS_REGEX = "SELECT DISTINCT(marca)"
+			+ " AS nombre_marca FROM productos WHERE REGEXP_LIKE(marca,?)"
+			+ " ORDER BY nombre_marca";
 	public static final String INSERT = "INSERT INTO productos(id_producto,nombre,"
 			+ "marca) VALUES(?,?,?)";
 	public static final String DELETE = "DELETE FROM productos WHERE id_producto = ?";
@@ -51,6 +56,23 @@ public class ProductoDAO {
 		return productoOpt;
 	}
 	
+	public Optional<Producto> selectByNombreMarca(final String nombre, final String marca){
+		assert nombre != null;
+		assert marca != null;
+		Optional<Producto> productoOpt = Optional.empty();
+		try(PreparedStatement st = conexion.prepareStatement(SELECT_BY_NOMBRE_MARCA)){
+			st.setString(1, nombre);
+			st.setString(2, marca);
+			ResultSet rs = st.executeQuery();
+			if(rs.next())
+				productoOpt = Optional.of(new Producto(rs.getInt("id_producto"),
+						nombre,marca));
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return productoOpt;
+	}
+	
 	public List<Producto> selectAll(){
 		List<Producto> productos = new LinkedList<>();
 		try(Statement st = conexion.createStatement()){
@@ -58,6 +80,21 @@ public class ProductoDAO {
 			while(rs.next())
 				productos.add(new Producto(rs.getInt("id_producto"),
 						rs.getString("nombre"),rs.getString("marca")));
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return productos;
+	}
+	
+	public List<Producto> selectAllByNombre(final String nombre){
+		assert nombre != null;
+		List<Producto> productos = new LinkedList<>();
+		try(PreparedStatement st = conexion.prepareStatement(SELECT_ALL_BY_NOMBRE)){
+			st.setString(1, nombre);
+			ResultSet rs = st.executeQuery();
+			while(rs.next())
+				productos.add(new Producto(rs.getInt("id_producto"),
+						nombre,rs.getString("marca")));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
