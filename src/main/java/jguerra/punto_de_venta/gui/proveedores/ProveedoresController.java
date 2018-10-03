@@ -16,6 +16,7 @@ import javafx.stage.WindowEvent;
 import jguerra.punto_de_venta.datos.dao.oracle.DAOManager;
 import jguerra.punto_de_venta.datos.modelo.Proveedor;
 import jguerra.punto_de_venta.datos.validacion.Validacion;
+import jguerra.punto_de_venta.gui.Fields;
 import jguerra.punto_de_venta.gui.Main;
 
 public class ProveedoresController {
@@ -80,6 +81,9 @@ public class ProveedoresController {
     			boton.setText("Actualizar");
     		}
     	});
+    	
+    	Fields.setupClearButtonField(fieldNombre);
+    	Fields.setupClearButtonField(fieldTelefono);
     	
     	fieldNombre.textProperty().addListener((ob,oldText,newText)->{
     		boton.setDisable(newText.trim().isEmpty() ||

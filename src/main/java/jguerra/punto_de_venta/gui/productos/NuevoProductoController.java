@@ -10,6 +10,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import jguerra.punto_de_venta.datos.dao.oracle.DAOManager;
 import jguerra.punto_de_venta.datos.modelo.Producto;
+import jguerra.punto_de_venta.gui.Fields;
 import jguerra.punto_de_venta.gui.Main;
 
 public class NuevoProductoController {
@@ -51,6 +52,9 @@ public class NuevoProductoController {
 		 
 		 manager = DAOManager.instance();
 		 
+		 Fields.setupClearButtonField(fieldNombre);
+		 Fields.setupClearButtonField(fieldMarca);
+		 
 		 fieldNombre.textProperty().addListener((observable,oldText,newText)->{
 			 btnGuardar.setDisable(newText.trim().isEmpty() || 
 					 fieldMarca.getText().trim().isEmpty());
@@ -64,7 +68,7 @@ public class NuevoProductoController {
 	 }
 	 
 	 @FXML
-	 private void onGuardar(){
+	 private void onGuardar(ActionEvent event){
 		 manager.producto().ifPresent(dao -> {
 			 producto = new Producto(fieldNombre.getText().trim().toUpperCase(), 
 					 fieldMarca.getText().trim().toUpperCase());

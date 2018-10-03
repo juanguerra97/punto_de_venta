@@ -16,6 +16,7 @@ import javafx.stage.WindowEvent;
 import jguerra.punto_de_venta.datos.dao.oracle.DAOManager;
 import jguerra.punto_de_venta.datos.modelo.Cliente;
 import jguerra.punto_de_venta.datos.validacion.Validacion;
+import jguerra.punto_de_venta.gui.Fields;
 import jguerra.punto_de_venta.gui.Main;
 
 public class ClientesController {
@@ -106,6 +107,11 @@ public class ClientesController {
     		}
     		fieldNit.setDisable(newSelection != null);
     	});
+    	
+    	Fields.setupClearButtonField(fieldNit);
+    	Fields.setupClearButtonField(fieldNombre);
+    	Fields.setupClearButtonField(fieldApellido);
+    	Fields.setupClearButtonField(fieldTelefono);
     	
     	fieldNit.textProperty().addListener((ob,oldText,newText)->{
     		nitInvalido = !Validacion.validarNit(newText.trim());

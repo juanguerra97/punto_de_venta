@@ -13,6 +13,7 @@ import jguerra.punto_de_venta.datos.dao.oracle.DAOManager;
 import jguerra.punto_de_venta.datos.modelo.Existencia;
 import jguerra.punto_de_venta.datos.modelo.Presentacion;
 import jguerra.punto_de_venta.datos.modelo.Sucursal;
+import jguerra.punto_de_venta.gui.Fields;
 import jguerra.punto_de_venta.gui.Main;
 
 public class NuevaExistenciaController {
@@ -63,6 +64,8 @@ public class NuevaExistenciaController {
     private void initialize() {
     	
     	manager = DAOManager.instance();
+    	
+    	Fields.setupClearButtonField(fieldCantidad);
     	
     	fieldCantidad.textProperty().addListener((observable,oldText,newText) -> {
     		boolean cantidadInvalida = false;

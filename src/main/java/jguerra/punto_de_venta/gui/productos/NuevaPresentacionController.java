@@ -12,6 +12,7 @@ import javafx.scene.control.Button;
 import jguerra.punto_de_venta.datos.dao.oracle.DAOManager;
 import jguerra.punto_de_venta.datos.modelo.Presentacion;
 import jguerra.punto_de_venta.datos.modelo.Producto;
+import jguerra.punto_de_venta.gui.Fields;
 import jguerra.punto_de_venta.gui.Main;
 
 public class NuevaPresentacionController {
@@ -86,6 +87,10 @@ public class NuevaPresentacionController {
     private void initialize() {
     	
     	manager = DAOManager.instance();
+    	
+    	Fields.setupClearButtonField(fieldNombre);
+    	Fields.setupClearButtonField(fieldCosto);
+    	Fields.setupClearButtonField(fieldPrecio);
     	
     	fieldNombre.textProperty().addListener((observable,oldText,newText)->{
     		btnGuardar.setDisable(newText.trim().isEmpty() ||

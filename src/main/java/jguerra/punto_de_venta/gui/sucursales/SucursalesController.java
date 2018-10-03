@@ -16,6 +16,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.WindowEvent;
 import jguerra.punto_de_venta.datos.dao.oracle.DAOManager;
 import jguerra.punto_de_venta.datos.modelo.Sucursal;
+import jguerra.punto_de_venta.gui.Fields;
 import jguerra.punto_de_venta.gui.Main;
 
 public class SucursalesController {
@@ -70,6 +71,8 @@ public class SucursalesController {
     			boton.setText("Actualizar");
     		}
     	});
+    	
+    	Fields.setupClearButtonField(fieldNombre);
     	
     	fieldNombre.textProperty().addListener((obj,viejo,nuevo)->{
     		boton.setDisable(nuevo.trim().isEmpty());
