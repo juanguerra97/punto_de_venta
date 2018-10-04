@@ -17,6 +17,7 @@ import javafx.stage.WindowEvent;
 import jguerra.punto_de_venta.datos.dao.oracle.DAOManager;
 import jguerra.punto_de_venta.datos.modelo.Sucursal;
 import jguerra.punto_de_venta.gui.Fields;
+import jguerra.punto_de_venta.gui.Icono;
 import jguerra.punto_de_venta.gui.Main;
 
 public class SucursalesController {
@@ -65,9 +66,11 @@ public class SucursalesController {
     	tablaSucursales.getSelectionModel().selectedItemProperty().addListener((obj,viejo,nuevo)->{
     		if(nuevo == null) {
     			fieldNombre.clear();
-    			boton.setText("Ingresar");
+    			boton.setGraphic(Icono.save16());
+    			boton.setText("Guardar");
     		}else {
     			fieldNombre.setText(nuevo.getNombre());
+    			boton.setGraphic(Icono.edit16());
     			boton.setText("Actualizar");
     		}
     	});
@@ -79,6 +82,12 @@ public class SucursalesController {
     	});
     	
     	fieldNombre.setOnAction(e->onBoton(e));
+    	
+    	boton.setText("Guardar");
+    	boton.setGraphic(Icono.save16());
+    	
+    	menuItemEliminar.setGraphic(Icono.clear16());
+    	menuItemDeseleccionar.setGraphic(Icono.remove16());
     	
     	cargarSucursales();
     	

@@ -33,6 +33,7 @@ import jguerra.punto_de_venta.datos.dao.oracle.DAOManager;
 import jguerra.punto_de_venta.datos.modelo.Existencia;
 import jguerra.punto_de_venta.datos.modelo.Presentacion;
 import jguerra.punto_de_venta.datos.modelo.Producto;
+import jguerra.punto_de_venta.gui.Icono;
 import jguerra.punto_de_venta.gui.Main;
 
 public class ProductosController {
@@ -49,6 +50,9 @@ public class ProductosController {
     @FXML
     private TableColumn<Producto, String> colMarcaProducto;
 
+    @FXML
+    private MenuItem itemNuevoProducto;
+    
     @FXML
     private MenuItem itemEliminarProducto;
 
@@ -338,6 +342,7 @@ public class ProductosController {
 			windowNuevoProducto = new Stage();
 			windowNuevoProducto.setScene(sceneNuevoProducto);
 			windowNuevoProducto.setTitle("Nuevo producto");
+			windowNuevoProducto.getIcons().add(Icono.new128());
 			windowNuevoProducto.setMinWidth(380);
 			windowNuevoProducto.setMinHeight(200);
 			windowNuevoProducto.initModality(Modality.APPLICATION_MODAL);
@@ -348,6 +353,7 @@ public class ProductosController {
 			windowNuevaPresentacion = new Stage();
 			windowNuevaPresentacion.setScene(sceneNuevaPresentacion);
 			windowNuevaPresentacion.setTitle("Nueva presentación");
+			windowNuevaPresentacion.getIcons().add(Icono.new128());
 			windowNuevaPresentacion.setMinWidth(380);
 			windowNuevaPresentacion.setMinHeight(220);
 			windowNuevaPresentacion.initModality(Modality.APPLICATION_MODAL);
@@ -358,6 +364,7 @@ public class ProductosController {
 			windowNuevaExistencia = new Stage();
 			windowNuevaExistencia.setScene(sceneNuevaExistencia);
 			windowNuevaExistencia.setTitle("Nueva existencia");
+			windowNuevaExistencia.getIcons().add(Icono.new128());
 			windowNuevaExistencia.setMinWidth(380);
 			windowNuevaExistencia.setMinHeight(200);
 			windowNuevaExistencia.initModality(Modality.APPLICATION_MODAL);
@@ -366,6 +373,21 @@ public class ProductosController {
 		}
 		
 		boxExistencias.getChildren().remove(boxNombreSucursal);
+		
+		itemNuevoProducto.setGraphic(Icono.add16());
+		itemEliminarProducto.setGraphic(Icono.clear16());
+		itemDeseleccionarProducto.setGraphic(Icono.remove16());
+		checkItemFiltrar.setGraphic(Icono.filter12());
+		
+		itemDeseleccionarMarca.setGraphic(Icono.remove16());
+		
+		itemNuevaPresentacion.setGraphic(Icono.add16());
+		itemEliminarPresentacion.setGraphic(Icono.clear16());
+		itemDeseleccionarPresentacion.setGraphic(Icono.remove16());
+		
+		itemNuevaExistencia.setGraphic(Icono.add16());
+		itemEliminarExistencia.setGraphic(Icono.clear16());
+		itemDeseleccionarExistencia.setGraphic(Icono.remove16());
 		
 		cargarProductos();
 		cargarMarcas();

@@ -17,6 +17,7 @@ import jguerra.punto_de_venta.datos.dao.oracle.DAOManager;
 import jguerra.punto_de_venta.datos.modelo.Cliente;
 import jguerra.punto_de_venta.datos.validacion.Validacion;
 import jguerra.punto_de_venta.gui.Fields;
+import jguerra.punto_de_venta.gui.Icono;
 import jguerra.punto_de_venta.gui.Main;
 
 public class ClientesController {
@@ -101,8 +102,10 @@ public class ClientesController {
     			(ob,oldSelection,newSelection)->{
     		loadCliente(newSelection);
     		if(newSelection == null) {
+    			boton.setGraphic(Icono.save16());
     			boton.setText("Guardar");
     		}else {
+    			boton.setGraphic(Icono.edit16());
     			boton.setText("Actualizar");
     		}
     		fieldNit.setDisable(newSelection != null);
@@ -136,6 +139,11 @@ public class ClientesController {
     		boton.setDisable(telefonoInvalido || nitInvalido || 
     				nombreInvalido || apellidoInvalido);
     	});
+    	
+    	boton.setGraphic(Icono.save16());
+    	
+    	itemEliminar.setGraphic(Icono.clear16());
+    	itemDeseleccionar.setGraphic(Icono.remove16());
     	
     	cargarClientes();
     	

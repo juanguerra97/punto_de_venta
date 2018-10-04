@@ -31,6 +31,7 @@ import jguerra.punto_de_venta.datos.modelo.Producto;
 import jguerra.punto_de_venta.datos.modelo.Proveedor;
 import jguerra.punto_de_venta.datos.modelo.Sucursal;
 import jguerra.punto_de_venta.gui.Fields;
+import jguerra.punto_de_venta.gui.Icono;
 import jguerra.punto_de_venta.gui.Main;
 import jguerra.punto_de_venta.gui.utils.FiltradorProductos;
 
@@ -237,6 +238,12 @@ public class NuevaCompraController {
     			cargarProductos();
     		}
     	});
+    	
+    	itemQuitarDetalle.setGraphic(Icono.clear16());
+    	itemDeseleccionarDetalle.setGraphic(Icono.remove16());
+    	itemDeseleccionarProducto.setGraphic(Icono.remove16());
+    	itemDeseleccionarPresentacion.setGraphic(Icono.remove16());
+    	itemDeseleccionarExistencia.setGraphic(Icono.remove16());
     	
     }
     

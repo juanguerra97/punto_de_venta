@@ -28,6 +28,7 @@ public class Main extends Application {
 	public void start(Stage stage) throws Exception {
 		
 		ERROR_ALERT.initModality(Modality.APPLICATION_MODAL);
+		root.setGraphic(Icono.announcement20());
 		
 		try {
 			Conexion.get();
@@ -46,6 +47,7 @@ public class Main extends Application {
 		Scene scene = new Scene(root,800,500);
 		stage.setScene(scene);
 		stage.setTitle("Punto de venta");
+		stage.getIcons().add(Icono.product128());
 		stage.setMinWidth(750);
 		stage.setMinHeight(450);
 		stage.setOnCloseRequest(w->{

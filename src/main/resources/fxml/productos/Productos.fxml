@@ -39,7 +39,7 @@
                            <contextMenu>
                               <ContextMenu onShown="#onProductosContextMenuShown">
                                 <items>
-                                  <MenuItem mnemonicParsing="false" onAction="#onNuevoProducto" text="Nuevo" />
+                                  <MenuItem fx:id="itemNuevoProducto" mnemonicParsing="false" onAction="#onNuevoProducto" text="Nuevo" />
                                     <MenuItem fx:id="itemEliminarProducto" disable="true" mnemonicParsing="false" onAction="#onEliminarProducto" text="Eliminar" />
                                     <MenuItem fx:id="itemDeseleccionarProducto" disable="true" mnemonicParsing="false" onAction="#onDeseleccionarProducto" text="Deseleccionar" />
                                     <SeparatorMenuItem mnemonicParsing="false" />

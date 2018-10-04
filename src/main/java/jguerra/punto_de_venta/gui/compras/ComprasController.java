@@ -25,6 +25,7 @@ import javafx.stage.WindowEvent;
 import jguerra.punto_de_venta.datos.dao.oracle.DAOManager;
 import jguerra.punto_de_venta.datos.modelo.Compra;
 import jguerra.punto_de_venta.datos.modelo.DetalleCompra;
+import jguerra.punto_de_venta.gui.Icono;
 import jguerra.punto_de_venta.gui.Main;
 
 public class ComprasController {
@@ -180,6 +181,10 @@ public class ComprasController {
 		}
 		
 		boxCompras.getChildren().remove(boxNombreProveedor);
+		
+		itemNuevaCompra.setGraphic(Icono.add16());
+		itemDeseleccionarCompra.setGraphic(Icono.remove16());
+		itemDeseleccionarDetalle.setGraphic(Icono.remove16());
 		
 		cargarCompras(null);
 		

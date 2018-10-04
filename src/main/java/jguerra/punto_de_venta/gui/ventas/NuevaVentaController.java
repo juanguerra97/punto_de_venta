@@ -33,6 +33,7 @@ import jguerra.punto_de_venta.datos.modelo.Sucursal;
 import jguerra.punto_de_venta.datos.modelo.Venta;
 import jguerra.punto_de_venta.datos.validacion.Validacion;
 import jguerra.punto_de_venta.gui.Fields;
+import jguerra.punto_de_venta.gui.Icono;
 import jguerra.punto_de_venta.gui.Main;
 import jguerra.punto_de_venta.gui.utils.FiltradorProductos;
 
@@ -290,6 +291,11 @@ public class NuevaVentaController {
     		if(newText.trim().isEmpty())
     			cargarProductos();
     	});
+    	
+    	itemQuitarDetalle.setGraphic(Icono.clear16());
+    	itemDeseleccionarDetalle.setGraphic(Icono.remove16());
+    	itemDeseleccionarProducto.setGraphic(Icono.remove16());
+    	itemDeseleccionarPresentacion.setGraphic(Icono.remove16());
     	
     }
     

@@ -17,6 +17,7 @@ import jguerra.punto_de_venta.datos.dao.oracle.DAOManager;
 import jguerra.punto_de_venta.datos.modelo.Proveedor;
 import jguerra.punto_de_venta.datos.validacion.Validacion;
 import jguerra.punto_de_venta.gui.Fields;
+import jguerra.punto_de_venta.gui.Icono;
 import jguerra.punto_de_venta.gui.Main;
 
 public class ProveedoresController {
@@ -74,10 +75,12 @@ public class ProveedoresController {
     		if(newSelection == null) {
     			fieldNombre.clear();
     			fieldTelefono.clear();
+    			boton.setGraphic(Icono.save16());
     			boton.setText("Guardar");
     		}else {
     			fieldNombre.setText(newSelection.getNombre());
     			fieldTelefono.setText(newSelection.getTelefono());
+    			boton.setGraphic(Icono.edit16());
     			boton.setText("Actualizar");
     		}
     	});
@@ -94,6 +97,11 @@ public class ProveedoresController {
     		boton.setDisable(!Validacion.validarTelefono(newText.trim()) ||
     				fieldNombre.getText().trim().isEmpty());
     	});
+    	
+    	boton.setGraphic(Icono.save16());
+    	
+    	itemEliminar.setGraphic(Icono.clear16());
+    	itemDeseleccionar.setGraphic(Icono.remove16());
     	
     	cargarProveedores();
     	

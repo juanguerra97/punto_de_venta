@@ -13,6 +13,8 @@
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -91,7 +93,14 @@
                   <HBox alignment="CENTER_LEFT" spacing="3.0">
                      <children>
                         <CustomTextField fx:id="fieldFiltroProductos" disable="true" promptText="Ingrese filtro..." HBox.hgrow="ALWAYS" />
-                        <Button fx:id="btnFiltrarProductos" disable="true" mnemonicParsing="false" text="Filtrar" />
+                        <Button fx:id="btnFiltrarProductos" disable="true" mnemonicParsing="false" text="Filtrar">
+                           <graphic>
+                              <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../icons/filter_black_16px.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic></Button>
                      </children>
                   </HBox>
                   <TableView fx:id="tablaProductos" VBox.vgrow="ALWAYS">
@@ -126,7 +135,14 @@
                         <Spinner fx:id="spinnerCantidad" disable="true" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
                      </children>
                   </HBox>
-                  <Button fx:id="btnAgregar" disable="true" mnemonicParsing="false" onAction="#onAgregar" text="Agregar" />
+                  <Button fx:id="btnAgregar" disable="true" mnemonicParsing="false" onAction="#onAgregar" text="Agregar">
+                     <graphic>
+                        <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../icons/add_black_48dp.png" />
+                           </image>
+                        </ImageView>
+                     </graphic></Button>
                </children>
             </VBox>
          </items>
@@ -145,8 +161,22 @@
                </font>
             </Label>
             <Separator HBox.hgrow="ALWAYS" />
-            <Button mnemonicParsing="false" onAction="#onCancelar" text="Cancelar" />
-            <Button fx:id="btnListo" disable="true" mnemonicParsing="false" onAction="#onListo" text="Listo" />
+            <Button mnemonicParsing="false" onAction="#onCancelar" text="Cancelar">
+               <graphic>
+                  <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../icons/clear_black_48dp.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
+            <Button fx:id="btnListo" disable="true" mnemonicParsing="false" onAction="#onListo" text="Listo">
+               <graphic>
+                  <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../icons/done_black_48dp.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
          </children>
          <padding>
             <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
