@@ -29,29 +29,29 @@ public final class Validacion {
 		assert nit != null;
 		
 		Matcher matcher = NIT.matcher(nit);
-		
-		if(matcher.find()) {
-			String leftPart = matcher.group(1);// parte izquierda del guion(sólo números)
-			String rightPart = matcher.group(2);// parte derecha del guion(número o letra 'k')
-			
-			int digitoVerificador = rightPart.equalsIgnoreCase("k") ? 10 : Integer.parseInt(rightPart);
-			
-			long leftNum = Long.parseLong(leftPart);
-			int suma = 0, pos = 2;
-			while(leftNum > 9) {
-				int digito = (int) (leftNum % 10);
-				suma += digito * pos;
-				leftNum /= 10;
-				++pos;
-			}
-			suma += leftNum * pos;
-			
-			int resultado = (11 - suma % 11) % 11;
-			
-			return resultado == digitoVerificador && resultado != 0;
-		}
-		
-		return false;
+		return matcher.find();
+//		if(matcher.find()) {
+//			String leftPart = matcher.group(1);// parte izquierda del guion(sólo números)
+//			String rightPart = matcher.group(2);// parte derecha del guion(número o letra 'k')
+//			
+//			int digitoVerificador = rightPart.equalsIgnoreCase("k") ? 10 : Integer.parseInt(rightPart);
+//			
+//			long leftNum = Long.parseLong(leftPart);
+//			int suma = 0, pos = 2;
+//			while(leftNum > 9) {
+//				int digito = (int) (leftNum % 10);
+//				suma += digito * pos;
+//				leftNum /= 10;
+//				++pos;
+//			}
+//			suma += leftNum * pos;
+//			
+//			int resultado = (11 - suma % 11) % 11;
+//			
+//			return resultado == digitoVerificador;
+//		}
+//		
+//		return false;
 	}
 
 }
