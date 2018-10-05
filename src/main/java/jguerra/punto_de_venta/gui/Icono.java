@@ -33,57 +33,57 @@ public final class Icono {
 //	}
 	
 	public static Image new128() {
-		return new Image("icons/file-new-icon.png");
+		return new Image("/icons/file-new-icon.png");
 	}
 	
 	public static Image product128() {
-		return new Image("icons/product-documentation-icon.png");
+		return new Image("/icons/product-documentation-icon.png");
 	}
 	
 	public static ImageView add16() {
-		ImageView imgView = new ImageView("icons/add_black_48dp.png");
+		ImageView imgView = new ImageView("/icons/add_black_48dp.png");
 		imgView.setFitWidth(16);
 		imgView.setFitHeight(16);
 		return imgView;
 	}
 	
 	public static ImageView clear16() {
-		ImageView imgView = new ImageView("icons/clear_black_48dp.png");
+		ImageView imgView = new ImageView("/icons/clear_black_48dp.png");
 		imgView.setFitWidth(16);
 		imgView.setFitHeight(16);
 		return imgView;
 	}
 	
 	public static ImageView remove16() {
-		ImageView imgView = new ImageView("icons/remove_black_48dp.png");
+		ImageView imgView = new ImageView("/icons/remove_black_48dp.png");
 		imgView.setFitWidth(16);
 		imgView.setFitHeight(16);
 		return imgView;
 	}
 	
 	public static ImageView filter12() {
-		ImageView imgView = new ImageView("icons/filter_black_16px.png");
+		ImageView imgView = new ImageView("/icons/filter_black_16px.png");
 		imgView.setFitWidth(12);
 		imgView.setFitHeight(12);
 		return imgView;
 	}
 	
 	public static ImageView edit16() {
-		ImageView imgView = new ImageView("icons/edit_black_48dp.png");
+		ImageView imgView = new ImageView("/icons/edit_black_48dp.png");
 		imgView.setFitWidth(16);
 		imgView.setFitHeight(16);
 		return imgView;
 	}
 	
 	public static ImageView save16() {
-		ImageView imgView = new ImageView("icons/save_black_48dp.png");
+		ImageView imgView = new ImageView("/icons/save_black_48dp.png");
 		imgView.setFitWidth(16);
 		imgView.setFitHeight(16);
 		return imgView;
 	}
 	
 	public static ImageView announcement20() {
-		ImageView imgView = new ImageView("icons/announcement_black_48dp.png");
+		ImageView imgView = new ImageView("/icons/announcement_black_48dp.png");
 		imgView.setFitWidth(20);
 		imgView.setFitHeight(20);
 		return imgView;
