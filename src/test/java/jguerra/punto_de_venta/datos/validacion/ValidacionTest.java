@@ -41,4 +41,19 @@ public class ValidacionTest {
 	
 	}
 
+	@Test
+	public void validarMoneda() {
+		assertTrue(Validacion.validarMoneda("50"));
+		assertTrue(Validacion.validarMoneda("80.5"));
+		assertTrue(Validacion.validarMoneda("10.75"));
+		assertTrue(Validacion.validarMoneda(".90"));
+		assertTrue(Validacion.validarMoneda(".5"));
+		
+		assertFalse(Validacion.validarMoneda(""));
+		assertFalse(Validacion.validarMoneda("hola"));
+		assertFalse(Validacion.validarMoneda("."));
+		assertFalse(Validacion.validarMoneda("80."));
+		assertFalse(Validacion.validarMoneda("15.125"));
+	}
+	
 }

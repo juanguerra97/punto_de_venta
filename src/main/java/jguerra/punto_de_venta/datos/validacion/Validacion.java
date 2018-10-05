@@ -9,6 +9,8 @@ public final class Validacion {
 	
 	public static final Pattern NIT = Pattern.compile("^(\\d+)-([\\dk])$", Pattern.CASE_INSENSITIVE);
 	
+	public static final Pattern MONEDA = Pattern.compile("^(\\d+(\\.\\d{1,2})?|\\.\\d{1,2})$");
+	
 	/**
 	 * Metodo para saber si un telefono es valido o no
 	 * @param telefono cadena con el telefono a validar
@@ -52,6 +54,11 @@ public final class Validacion {
 //		}
 //		
 //		return false;
+	}
+	
+	public static boolean validarMoneda(final String moneda) {
+		assert moneda != null;
+		return MONEDA.matcher(moneda).find();
 	}
 
 }
