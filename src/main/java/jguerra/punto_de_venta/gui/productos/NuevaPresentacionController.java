@@ -12,6 +12,7 @@ import javafx.scene.control.Button;
 import jguerra.punto_de_venta.datos.dao.oracle.DAOManager;
 import jguerra.punto_de_venta.datos.modelo.Presentacion;
 import jguerra.punto_de_venta.datos.modelo.Producto;
+import jguerra.punto_de_venta.datos.validacion.Validacion;
 import jguerra.punto_de_venta.gui.Fields;
 import jguerra.punto_de_venta.gui.Main;
 
@@ -37,6 +38,10 @@ public class NuevaPresentacionController {
     private Producto producto = null;
     private Presentacion presentacion = null;
     
+    private boolean nombreInvalido = true;
+    private boolean costoInvalido = true;
+    private boolean precioInvalido = true;
+    
     public void reset() {
     	
     	producto = null;
@@ -61,8 +66,6 @@ public class NuevaPresentacionController {
     }
     
     private boolean valoresCostoPrecioInvalidos() {
-    	boolean costoInvalido = false;
-    	boolean precioInvalido = false;
     	boolean invalidos = false;
     	
     	BigDecimal costo = null;
@@ -80,7 +83,7 @@ public class NuevaPresentacionController {
     		precioInvalido = true;
     	}
     	invalidos = (costo != null && precio != null && costo.compareTo(precio) > 0);
-    	return costoInvalido || precioInvalido || invalidos;
+    	return invalidos;
     }
     
     @FXML
@@ -93,17 +96,20 @@ public class NuevaPresentacionController {
     	Fields.setupClearButtonField(fieldPrecio);
     	
     	fieldNombre.textProperty().addListener((observable,oldText,newText)->{
-    		btnGuardar.setDisable(newText.trim().isEmpty() ||
+    		nombreInvalido = newText.trim().isEmpty();
+    		btnGuardar.setDisable(nombreInvalido || costoInvalido || precioInvalido ||
     				valoresCostoPrecioInvalidos());
     	});
     	
     	fieldCosto.textProperty().addListener((observable,oldText,newText)->{
-    		btnGuardar.setDisable(fieldNombre.getText().trim().isEmpty() ||
+    		costoInvalido = !Validacion.validarMoneda(newText.trim());
+    		btnGuardar.setDisable(costoInvalido || nombreInvalido || precioInvalido ||
     				valoresCostoPrecioInvalidos());
     	});
     	
     	fieldPrecio.textProperty().addListener((observable,oldText,newText)->{
-    		btnGuardar.setDisable(fieldNombre.getText().trim().isEmpty() ||
+    		precioInvalido = !Validacion.validarMoneda(newText.trim());
+    		btnGuardar.setDisable(precioInvalido || nombreInvalido || costoInvalido ||
     				valoresCostoPrecioInvalidos());
     	});
     	
