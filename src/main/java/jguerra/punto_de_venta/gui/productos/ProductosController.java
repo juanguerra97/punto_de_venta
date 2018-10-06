@@ -222,6 +222,11 @@ public class ProductosController {
 					producto.setNombre(actualizado.getNombre());
 					producto.setMarca(actualizado.getMarca());
 					Main.notificar("Se actualizó un producto");
+					if(checkItemFiltrar.isSelected()) {
+						String marca = listaMarcas.getSelectionModel().getSelectedItem();
+						if(marca != null && !producto.getMarca().equals(marca))
+							productos.remove(producto);
+					}
 					tablaProductos.requestFocus();
 					param.toggleExpanded();
 				} catch (SQLException e) {
