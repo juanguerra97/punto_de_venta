@@ -153,7 +153,7 @@ public class ClientesController {
     private void onBoton(ActionEvent event) {
     	manager.cliente().ifPresent(dao -> {
     		Cliente cliente = tablaClientes.getSelectionModel().getSelectedItem();
-        	String nit = fieldNit.getText().trim();
+        	String nit = fieldNit.getText().trim().toUpperCase();
     		String nombre = fieldNombre.getText().trim().toUpperCase();
     		String apellido = fieldApellido.getText().trim().toUpperCase();
         	String telefono = fieldTelefono.getText().trim();
