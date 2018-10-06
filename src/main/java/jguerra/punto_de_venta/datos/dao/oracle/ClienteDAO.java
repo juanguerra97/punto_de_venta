@@ -68,7 +68,7 @@ public class ClienteDAO {
 		} catch (SQLException e) {
 			String msg = e.getMessage();
 			if(msg != null)
-				if(msg.equals("ORA-00001: unique constraint (ADMIN_PV.SYS_C007479) violated\n"))
+				if(msg.matches("^ORA-00001: unique constraint.*\\n$"))
 					throw new SQLException("El NIT del cliente se encuentra duplicado",e);
 			throw new SQLException("Error en la consulta",e);
 		}

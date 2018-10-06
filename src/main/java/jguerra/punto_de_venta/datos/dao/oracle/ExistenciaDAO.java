@@ -118,7 +118,7 @@ public class ExistenciaDAO {
 		} catch (SQLException e) {
 			String msg = e.getMessage();
 			if(msg != null)
-				if(msg.equals("ORA-00001: unique constraint (ADMIN_PV.EXISTENCIA_PK) violated\n"))
+				if(msg.matches("^ORA-00001: unique constraint.*\\n$"))
 					throw new SQLException("Ya hay existencias del producto para la sucursal", e);
 			throw new SQLException("Ocurrió un error con la consulta", e);
 		}

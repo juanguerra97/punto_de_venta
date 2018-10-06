@@ -156,7 +156,7 @@ public class ProductoDAO {
 		} catch (SQLException e) {
 			String msg = e.getMessage();
 			if(msg != null)
-				if(msg.equals("ORA-00001: unique constraint (ADMIN_PV.NOM_MARCA_UNIQUE) violated\n"))
+				if(msg.matches("^ORA-00001: unique constraint.*\\n$"))
 					throw new SQLException("Los datos del producto están duplicados", e);
 			throw new SQLException("Ocurrió un error con la consulta", e);
 		}
@@ -182,7 +182,7 @@ public class ProductoDAO {
 		} catch (SQLException e) {
 			String msg = e.getMessage();
 			if(msg != null)
-				if(msg.equals("ORA-00001: unique constraint (ADMIN_PV.NOM_MARCA_UNIQUE) violated\n"))
+				if(msg.matches("^ORA-00001: unique constraint.*\\n$"))
 					throw new SQLException("Los datos del producto están duplicados", e);
 			throw new SQLException("Ocurrió un error con la consulta", e);
 		}
