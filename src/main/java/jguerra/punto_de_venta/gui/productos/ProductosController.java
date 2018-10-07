@@ -134,6 +134,9 @@ public class ProductosController {
     
     private TableRowExpanderColumn.TableRowDataFeatures<Producto> param = null;
     
+    private EditorPresentacion editorPresentacion;
+    private TableRowExpanderColumn.TableRowDataFeatures<Presentacion> expanderPresentacion = null;
+    
     public void updateExistencias() {
     	if(tablaProductos.getSelectionModel().getSelectedItem() != null) {
     		final Presentacion presentacion = tablaPresentaciones
@@ -259,6 +262,28 @@ public class ProductosController {
 
         return editor;
     }
+    
+    private GridPane createEditorPresentacion(TableRowExpanderColumn.TableRowDataFeatures<Presentacion> param) {
+    	
+    	param.expandedProperty().addListener((ob,viejo,nuevo)->{
+    		if(!nuevo)
+    			expanderPresentacion = null;
+    	});
+    	
+    	if(expanderPresentacion != null)
+    		if(expanderPresentacion.isExpanded())
+    			expanderPresentacion.toggleExpanded();
+    	
+    	tablaPresentaciones.requestFocus();
+    	tablaPresentaciones.getSelectionModel().clearSelection();
+    	expanderPresentacion = param;
+    	
+    	final Presentacion pres = param.getValue();
+    	tablaPresentaciones.getSelectionModel().select(pres);
+    	editorPresentacion.setPresentacion(pres);
+    	
+    	return editorPresentacion;
+    }
 	
 	@SuppressWarnings("unchecked")
 	@FXML
@@ -275,15 +300,48 @@ public class ProductosController {
 		colNombreProducto.setCellValueFactory(new PropertyValueFactory<Producto,String>("nombre"));
 		colMarcaProducto.setCellValueFactory(new PropertyValueFactory<Producto,String>("marca"));
 		
-		TableRowExpanderColumn<Producto> expanderColumn = new TableRowExpanderColumn<>(this::createEditorProducto);
-		expanderColumn.setMinWidth(25);
-		expanderColumn.setMaxWidth(25);
-		tablaProductos.getColumns().setAll(expanderColumn,colIdProducto,colNombreProducto,colMarcaProducto);
+		TableRowExpanderColumn<Producto> expColProducto = new TableRowExpanderColumn<>(this::createEditorProducto);
+		expColProducto.setMinWidth(25);
+		expColProducto.setMaxWidth(25);
+		tablaProductos.getColumns().setAll(expColProducto,colIdProducto,colNombreProducto,colMarcaProducto);
 		
 		tablaPresentaciones.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 		colNombrePresentacion.setCellValueFactory(new PropertyValueFactory<Presentacion,String>("nombre"));
 		colPrecioPresentacion.setCellValueFactory(new PropertyValueFactory<Presentacion,BigDecimal>("precio"));
 		colCostoPresentacion.setCellValueFactory(new PropertyValueFactory<Presentacion,BigDecimal>("costo"));
+		
+		editorPresentacion = new EditorPresentacion(
+				e -> {
+					final Presentacion pres = expanderPresentacion.getValue();
+					final Presentacion actualizada = new Presentacion(pres.getId(), 
+							pres.getIdProducto(), editorPresentacion.getNombre().trim().toUpperCase(), 
+							new BigDecimal(editorPresentacion.getPrecio().trim()), 
+							new BigDecimal(editorPresentacion.getCosto().trim()));
+		        	manager.presentacion().ifPresent(dao -> {
+		        		try {
+		        			dao.update(actualizada);
+		        			pres.setNombre(actualizada.getNombre());
+		        			pres.setCosto(actualizada.getCosto());
+		        			pres.setPrecio(actualizada.getPrecio());
+							Main.notificar("Presentación actualizada");
+							tablaPresentaciones.requestFocus();
+							expanderPresentacion.toggleExpanded();
+						} catch (SQLException ex) {
+							Main.notificar(ex.getMessage());
+							editorPresentacion.focusNombre();
+							ex.printStackTrace();
+						}
+		        	}); 
+				}, 
+				e -> {
+					tablaPresentaciones.requestFocus();
+		        	expanderPresentacion.toggleExpanded();
+				});
+		
+		TableRowExpanderColumn<Presentacion> expColPresentacion = new TableRowExpanderColumn<>(this::createEditorPresentacion);
+		expColPresentacion.setMinWidth(25);
+		expColPresentacion.setMaxWidth(25);
+		tablaPresentaciones.getColumns().setAll(expColPresentacion,colNombrePresentacion,colCostoPresentacion,colPrecioPresentacion);
 		
 		tablaExistencias.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 		colSucursalExistencia.setCellValueFactory(new PropertyValueFactory<Existencia,Integer>("idSucursal"));
