@@ -7,6 +7,7 @@ import org.controlsfx.control.textfield.TextFields;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -59,6 +60,10 @@ public class EditorPresentacion extends GridPane {
 			btnActualizar.setDisable(precioInvalido || nombreInvalido 
 					|| costoInvalido || costoGtPrecio());
 		});
+		
+		setPadding(new Insets(3, 3, 3, 3));
+		setHgap(3);
+		setVgap(2);
 		
 		addRow(0, new Label("Nombre"), fieldNombre);
         addRow(1, new Label("Costo"), fieldCosto);
