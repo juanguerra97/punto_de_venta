@@ -1,7 +1,7 @@
 
 CREATE TABLE sucursales(
     id_sucursal INTEGER PRIMARY KEY,
-    nombre VARCHAR2(50 CHAR) NOT NULL UNIQUE
+    nombre_sucursal VARCHAR2(50 CHAR) NOT NULL UNIQUE
 );
 
 CREATE SEQUENCE sucursal_id_seq
@@ -10,8 +10,8 @@ CREATE SEQUENCE sucursal_id_seq
 
 CREATE TABLE proveedores(
     id_proveedor INTEGER PRIMARY KEY,
-    nombre VARCHAR2(50 CHAR) NOT NULL,
-    telefono CHAR(8 CHAR) NOT NULL CHECK(REGEXP_LIKE(telefono,'^\d{8}$'))
+    nombre_proveedor VARCHAR2(50 CHAR) NOT NULL,
+    telefono_proveedor CHAR(8 CHAR) NOT NULL CHECK(REGEXP_LIKE(telefono_proveedor,'^\d{8}$'))
 );
 
 CREATE SEQUENCE proveedor_id_seq
@@ -19,17 +19,17 @@ CREATE SEQUENCE proveedor_id_seq
     INCREMENT BY 1;
 
 CREATE TABLE clientes(
-    nit VARCHAR2(20 CHAR) PRIMARY KEY CHECK(REGEXP_LIKE(nit,'^\d+-[0-9kK]$')),
-    nombre VARCHAR2(50 CHAR) NOT NULL,
-    apellido VARCHAR2(50 CHAR) NOT NULL,
-    telefono CHAR(8 CHAR) NOT NULL CHECK(REGEXP_LIKE(telefono,'^\d{8}$'))
+    nit_cliente VARCHAR2(20 CHAR) PRIMARY KEY CHECK(REGEXP_LIKE(nit_cliente,'^\d+-[0-9kK]$')),
+    nombre_cliente VARCHAR2(50 CHAR) NOT NULL,
+    apellido_cliente VARCHAR2(50 CHAR) NOT NULL,
+    telefono_cliente CHAR(8 CHAR) NOT NULL CHECK(REGEXP_LIKE(telefono_cliente,'^\d{8}$'))
 );
 
 CREATE TABLE productos(
     id_producto INTEGER PRIMARY KEY,
-    nombre VARCHAR2(50 CHAR) NOT NULL,
-    marca VARCHAR2(50 CHAR) NOT NULL,
-    CONSTRAINT nom_marca_unique UNIQUE(nombre,marca)
+    nombre_producto VARCHAR2(50 CHAR) NOT NULL,
+    marca_producto VARCHAR2(50 CHAR) NOT NULL,
+    CONSTRAINT nom_marca_unique UNIQUE(nombre_producto,marca_producto)
 );
 
 CREATE SEQUENCE producto_id_seq
@@ -38,13 +38,13 @@ CREATE SEQUENCE producto_id_seq
 
 CREATE TABLE presentaciones(
     id_presentacion INTEGER PRIMARY KEY,
-    nombre VARCHAR2(50 CHAR) NOT NULL,
-    precio NUMBER(10,2) NOT NULL CHECK(precio >= 0.00),
-    costo NUMBER(10,2) NOT NULL CHECK(costo >= 0.00),
+    nombre_presentacion VARCHAR2(50 CHAR) NOT NULL,
+    precio_presentacion NUMBER(10,2) NOT NULL CHECK(precio_presentacion >= 0.00),
+    costo_presentacion NUMBER(10,2) NOT NULL CHECK(costo_presentacion >= 0.00),
     id_producto INTEGER NOT NULL,
     CONSTRAINT producto_presentacion_fk FOREIGN KEY(id_producto)
         REFERENCES productos(id_producto),
-    CONSTRAINT presentacion_producto_unique UNIQUE(nombre,id_producto)
+    CONSTRAINT presentacion_producto_unique UNIQUE(nombre_presentacion,id_producto)
 );
 
 CREATE SEQUENCE presentacion_id_seq
@@ -53,11 +53,11 @@ CREATE SEQUENCE presentacion_id_seq
 
 -- trigger que impide precios menores al costo en una presentacion
 CREATE OR REPLACE TRIGGER verif_costo_less_precio_pres
-    BEFORE INSERT OR UPDATE OF precio,costo 
+    BEFORE INSERT OR UPDATE OF precio_presentacion,costo_presentacion 
     ON presentaciones
     FOR EACH ROW
 BEGIN
-        IF :NEW.precio < :NEW.costo THEN
+        IF :NEW.precio_presentacion < :NEW.costo_presentacion THEN
             RAISE_APPLICATION_ERROR(-20001,'El precio no puede ser menor al costo');
         END IF;
 END;
@@ -75,13 +75,13 @@ CREATE TABLE existencias(
 );
 
 CREATE TABLE ventas(
-    numero INTEGER PRIMARY KEY,
+    numero_venta INTEGER PRIMARY KEY,
     nit_cliente VARCHAR2(20 CHAR) NOT NULL,
-    fecha DATE NOT NULL,
-    total NUMBER(15,2) NOT NULL CHECK(total >= 0.00),
+    fecha_venta DATE NOT NULL,
+    total_venta NUMBER(15,2) NOT NULL CHECK(total_venta >= 0.00),
     id_sucursal INTEGER NOT NULL,
     CONSTRAINT cliente_venta_fk FOREIGN KEY(nit_cliente)
-        REFERENCES clientes(nit),
+        REFERENCES clientes(nit_cliente),
     CONSTRAINT sucursal_venta_fk FOREIGN KEY(id_sucursal)
         REFERENCES sucursales(id_sucursal)
 );
@@ -100,7 +100,7 @@ CREATE TABLE detalle_venta(
     cantidad INTEGER NOT NULL CHECK(cantidad > 0),
     CONSTRAINT detalle_venta_pk PRIMARY KEY(numero_venta,nombre_producto,marca_producto,presentacion_producto),
     CONSTRAINT venta_detalle_fk FOREIGN KEY(numero_venta)
-        REFERENCES ventas(numero)
+        REFERENCES ventas(numero_venta)
 );
 
 -- trigger que impide precios menores al costo en un detalle de venta
@@ -116,10 +116,10 @@ END;
 /
 
 CREATE TABLE compras(
-    numero INTEGER PRIMARY KEY,
+    numero_compra INTEGER PRIMARY KEY,
     id_proveedor INTEGER NOT NULL,
-    fecha DATE NOT NULL,
-    total NUMBER(15,2) NOT NULL CHECK(total >= 0.00),
+    fecha_compra DATE NOT NULL,
+    total_compra NUMBER(15,2) NOT NULL CHECK(total_compra >= 0.00),
     CONSTRAINT proveedor_compra_fk FOREIGN KEY(id_proveedor)
         REFERENCES proveedores(id_proveedor)
 );
@@ -138,5 +138,5 @@ CREATE TABLE detalle_compra(
     cantidad INTEGER NOT NULL CHECK(cantidad > 0),
     CONSTRAINT detalle_compra_pk PRIMARY KEY(numero_compra,nombre_producto,marca_producto,presentacion_producto,nombre_sucursal),
     CONSTRAINT compra_detalle_fk FOREIGN KEY(numero_compra)
-        REFERENCES compras(numero)
+        REFERENCES compras(numero_compra)
 );

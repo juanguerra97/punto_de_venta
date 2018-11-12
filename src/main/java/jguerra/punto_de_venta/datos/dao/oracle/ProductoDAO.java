@@ -14,25 +14,25 @@ import jguerra.punto_de_venta.datos.modelo.Producto;
 
 public class ProductoDAO {
 	
-	public static final String SELECT_BY_ID = "SELECT nombre,marca FROM productos"
+	public static final String SELECT_BY_ID = "SELECT nombre_producto,marca_producto FROM productos"
 			+ " WHERE id_producto = ?";
 	public static final String SELECT_BY_NOMBRE_MARCA = "SELECT id_producto"
-			+ " FROM productos WHERE nombre = ? AND marca = ? ORDER BY id_producto";
-	public static final String SELECT_ALL = "SELECT id_producto,nombre,marca FROM"
-			+ " productos ORDER BY id_producto,nombre";
-	public static final String SELECT_ALL_BY_NOMBRE = "SELECT id_producto,marca"
-			+ " FROM productos WHERE nombre = ? ORDER BY id_producto";
-	public static final String SELECT_ALL_BY_MARCA = "SELECT id_producto,nombre,marca"
-			+ " FROM productos WHERE marca = ? ORDER BY id_producto,nombre";
-	public static final String SELECT_ALL_MARCAS = "SELECT DISTINCT(marca)"
+			+ " FROM productos WHERE nombre_producto = ? AND marca_producto = ? ORDER BY id_producto";
+	public static final String SELECT_ALL = "SELECT id_producto,nombre_producto,marca_producto FROM"
+			+ " productos ORDER BY id_producto,nombre_producto";
+	public static final String SELECT_ALL_BY_NOMBRE = "SELECT id_producto,marca_producto"
+			+ " FROM productos WHERE nombre_producto = ? ORDER BY id_producto";
+	public static final String SELECT_ALL_BY_MARCA = "SELECT id_producto,nombre_producto,marca_producto"
+			+ " FROM productos WHERE marca_producto = ? ORDER BY id_producto,nombre_producto";
+	public static final String SELECT_ALL_MARCAS = "SELECT DISTINCT(marca_producto)"
 			+ " AS nombre_marca FROM productos ORDER BY nombre_marca";
-	public static final String SELECT_MARCAS_REGEX = "SELECT DISTINCT(marca)"
-			+ " AS nombre_marca FROM productos WHERE REGEXP_LIKE(marca,?)"
+	public static final String SELECT_MARCAS_REGEX = "SELECT DISTINCT(marca_producto)"
+			+ " AS nombre_marca FROM productos WHERE REGEXP_LIKE(marca_producto,?)"
 			+ " ORDER BY nombre_marca";
-	public static final String INSERT = "INSERT INTO productos(id_producto,nombre,"
-			+ "marca) VALUES(?,?,?)";
+	public static final String INSERT = "INSERT INTO productos(id_producto,nombre_producto,"
+			+ "marca_producto) VALUES(?,?,?)";
 	public static final String DELETE = "DELETE FROM productos WHERE id_producto = ?";
-	public static final String UPDATE = "UPDATE productos SET nombre = ?,marca=?"
+	public static final String UPDATE = "UPDATE productos SET nombre_producto = ?,marca_producto=?"
 			+ " WHERE id_producto = ?";
 	
 	private Connection conexion;
@@ -49,7 +49,7 @@ public class ProductoDAO {
 			ResultSet rs = st.executeQuery();
 			if(rs.next())
 				productoOpt = Optional.of(new Producto(idProducto,
-						rs.getString("nombre"),rs.getString("marca")));
+						rs.getString("nombre_producto"),rs.getString("marca_producto")));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -79,7 +79,7 @@ public class ProductoDAO {
 			ResultSet rs = st.executeQuery(SELECT_ALL);
 			while(rs.next())
 				productos.add(new Producto(rs.getInt("id_producto"),
-						rs.getString("nombre"),rs.getString("marca")));
+						rs.getString("nombre_producto"),rs.getString("marca_producto")));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -94,7 +94,7 @@ public class ProductoDAO {
 			ResultSet rs = st.executeQuery();
 			while(rs.next())
 				productos.add(new Producto(rs.getInt("id_producto"),
-						nombre,rs.getString("marca")));
+						nombre,rs.getString("marca_producto")));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -109,7 +109,7 @@ public class ProductoDAO {
 			ResultSet rs = st.executeQuery();
 			while(rs.next())
 				productos.add(new Producto(rs.getInt("id_producto"),
-						rs.getString("nombre"),rs.getString("marca")));
+						rs.getString("nombre_producto"),rs.getString("marca_producto")));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

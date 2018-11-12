@@ -16,11 +16,11 @@ import jguerra.punto_de_venta.datos.modelo.Venta;
 
 public class VentaDAO {
 	
-	public static final String SELECT_ALL = "SELECT numero,nit_cliente,fecha,total,id_sucursal"
-			+ " FROM ventas ORDER BY numero";
-	public static final String SELECT_ALL_BY_FECHA = "SELECT numero,nit_cliente,total,id_sucursal"
-			+ " FROM ventas WHERE fecha = ?";
-	public static final String INSERT = "INSERT INTO ventas(numero,nit_cliente,fecha,total,id_sucursal)"
+	public static final String SELECT_ALL = "SELECT numero_venta,nit_cliente,fecha_venta,total_venta,id_sucursal"
+			+ " FROM ventas ORDER BY numero_venta";
+	public static final String SELECT_ALL_BY_FECHA = "SELECT numero_venta,nit_cliente,total_venta,id_sucursal"
+			+ " FROM ventas WHERE fecha_venta = ?";
+	public static final String INSERT = "INSERT INTO ventas(numero_venta,nit_cliente,fecha_venta,total_venta,id_sucursal)"
 			+ " VALUES(?,?,?,?,?)";
 	public static final String INSERT_DETALLEVENTA = "INSERT INTO detalle_venta(numero_venta,nombre_producto"
 			+ ",marca_producto,presentacion_producto,costo,precio,cantidad) VALUES(?,?,?,?,?,?,?)";
@@ -37,9 +37,9 @@ public class VentaDAO {
 		try(Statement st = conexion.createStatement()){
 			ResultSet rs = st.executeQuery(SELECT_ALL);
 			while(rs.next())
-				ventas.add(new Venta(rs.getInt("numero"),rs.getString("nit_cliente"),
-						rs.getInt("id_sucursal"),rs.getTimestamp("fecha").toLocalDateTime().toLocalDate(),
-						rs.getBigDecimal("total")));
+				ventas.add(new Venta(rs.getInt("numero_venta"),rs.getString("nit_cliente"),
+						rs.getInt("id_sucursal"),rs.getTimestamp("fecha_venta").toLocalDateTime().toLocalDate(),
+						rs.getBigDecimal("total_venta")));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -53,8 +53,8 @@ public class VentaDAO {
 			st.setTimestamp(1,Timestamp.valueOf(fecha.atStartOfDay()));
 			ResultSet rs = st.executeQuery();
 			while(rs.next())
-				ventas.add(new Venta(rs.getInt("numero"),rs.getString("nit_cliente"),
-						rs.getInt("id_sucursal"),fecha, rs.getBigDecimal("total")));
+				ventas.add(new Venta(rs.getInt("numero_venta"),rs.getString("nit_cliente"),
+						rs.getInt("id_sucursal"),fecha, rs.getBigDecimal("total_venta")));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

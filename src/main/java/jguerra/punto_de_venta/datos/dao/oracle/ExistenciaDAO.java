@@ -21,10 +21,10 @@ public class ExistenciaDAO {
 			+ " FROM existencias WHERE id_presentacion = ?";
 	public static final String SELECT_BY_DETALLE = "SELECT id_presentacion,id_sucursal,cantidad"
 			+ " FROM (SELECT id_presentacion,id_sucursal,cantidad FROM (SELECT id_presentacion"
-			+ " FROM (SELECT id_producto FROM productos WHERE nombre = ? AND marca = ?)"
-			+ " NATURAL JOIN presentaciones WHERE presentaciones.nombre = ?)"
+			+ " FROM (SELECT id_producto FROM productos WHERE nombre_producto = ? AND marca_producto = ?)"
+			+ " NATURAL JOIN presentaciones WHERE nombre_presentacion = ?)"
 			+ " NATURAL JOIN existencias) NATURAL JOIN (SELECT id_sucursal FROM sucursales"
-			+ " WHERE nombre = ?)";
+			+ " WHERE nombre_sucursal = ?)";
 	public static final String INSERT = "INSERT INTO existencias(id_presentacion,"
 			+ "id_sucursal,cantidad) VALUES(?,?,?)";
 	public static final String UPDATE = "UPDATE existencias SET cantidad = ?"

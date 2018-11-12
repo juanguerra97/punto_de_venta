@@ -16,11 +16,11 @@ import jguerra.punto_de_venta.datos.modelo.DetalleCompra;
 
 public class CompraDAO {
 	
-	public static final String SELECT_ALL = "SELECT numero,id_proveedor,fecha,total"
-			+ " FROM compras ORDER BY numero";
-	public static final String SELECT_ALL_BY_FECHA = "SELECT numero,id_proveedor,total"
-			+ " FROM compras WHERE fecha = ?";
-	public static final String INSERT = "INSERT INTO compras(numero,id_proveedor,fecha,total)"
+	public static final String SELECT_ALL = "SELECT numero_compra,id_proveedor,fecha_compra,total_compra"
+			+ " FROM compras ORDER BY numero_compra";
+	public static final String SELECT_ALL_BY_FECHA = "SELECT numero_compra,id_proveedor,total_compra"
+			+ " FROM compras WHERE fecha_compra = ?";
+	public static final String INSERT = "INSERT INTO compras(numero_compra,id_proveedor,fecha_compra,total_compra)"
 			+ " VALUES(?,?,?,?)";
 	public static final String INSERT_DETALLECOMPRA = "INSERT INTO detalle_compra(numero_compra,nombre_producto"
 			+ ",marca_producto,presentacion_producto,nombre_sucursal,costo,cantidad) VALUES(?,?,?,?,?,?,?)";
@@ -37,9 +37,9 @@ public class CompraDAO {
 		try(Statement st = conexion.createStatement()){
 			ResultSet rs = st.executeQuery(SELECT_ALL);
 			while(rs.next())
-				compras.add(new Compra(rs.getInt("numero"),rs.getInt("id_proveedor"),
-						rs.getTimestamp("fecha").toLocalDateTime().toLocalDate(),
-						rs.getBigDecimal("total")));
+				compras.add(new Compra(rs.getInt("numero_compra"),rs.getInt("id_proveedor"),
+						rs.getTimestamp("fecha_compra").toLocalDateTime().toLocalDate(),
+						rs.getBigDecimal("total_compra")));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -53,8 +53,8 @@ public class CompraDAO {
 			st.setTimestamp(1,Timestamp.valueOf(fecha.atStartOfDay()));
 			ResultSet rs = st.executeQuery();
 			while(rs.next())
-				compras.add(new Compra(rs.getInt("numero"),rs.getInt("id_proveedor"),
-						fecha, rs.getBigDecimal("total")));
+				compras.add(new Compra(rs.getInt("numero_compra"),rs.getInt("id_proveedor"),
+						fecha, rs.getBigDecimal("total_compra")));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

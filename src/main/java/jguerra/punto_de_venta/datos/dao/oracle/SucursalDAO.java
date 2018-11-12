@@ -14,11 +14,17 @@ import jguerra.punto_de_venta.datos.modelo.Sucursal;
 
 public class SucursalDAO {
 	
-	public static final String SELECT = "SELECT nombre FROM sucursales WHERE id_sucursal = ?";
-	public static final String SELECT_ALL = "SELECT id_sucursal,nombre FROM sucursales ORDER BY nombre";
-	public static final String INSERT = "INSERT INTO sucursales(id_sucursal,nombre) VALUES(?,?)";
-	public static final String DELETE = "DELETE FROM sucursales WHERE id_sucursal = ?";
-	public static final String UPDATE = "UPDATE sucursales SET nombre = ? WHERE id_sucursal = ?";
+	public static final String SELECT = "SELECT nombre_sucursal"
+			+ " FROM sucursales WHERE id_sucursal = ?";
+	public static final String SELECT_ALL = "SELECT id_sucursal,"
+			+ "nombre_sucursal FROM sucursales"
+			+ " ORDER BY nombre_sucursal";
+	public static final String INSERT = "INSERT INTO sucursales"
+			+ "(id_sucursal,nombre_sucursal) VALUES(?,?)";
+	public static final String DELETE = "DELETE FROM sucursales"
+			+ " WHERE id_sucursal = ?";
+	public static final String UPDATE = "UPDATE sucursales"
+			+ " SET nombre_sucursal = ? WHERE id_sucursal = ?";
 	
 	private Connection conexion;
 	
@@ -33,7 +39,8 @@ public class SucursalDAO {
 			st.setInt(1, id);
 			ResultSet rs = st.executeQuery();
 			if(rs.next())
-				sucursalOpt = Optional.of(new Sucursal(id,rs.getString("nombre")));
+				sucursalOpt = Optional.of(new Sucursal(id,
+						rs.getString("nombre_sucursal")));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -45,7 +52,7 @@ public class SucursalDAO {
 		try(Statement st = conexion.createStatement()){
 			ResultSet rs = st.executeQuery(SELECT_ALL);
 			while(rs.next())
-				sucursales.add(new Sucursal(rs.getInt("id_sucursal"),rs.getString("nombre")));
+				sucursales.add(new Sucursal(rs.getInt("id_sucursal"),rs.getString("nombre_sucursal")));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

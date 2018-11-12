@@ -13,11 +13,11 @@ import jguerra.punto_de_venta.datos.modelo.Cliente;
 
 public class ClienteDAO {
 	
-	public static final String SELECT = "SELECT nombre,apellido,telefono FROM clientes WHERE nit = ?";
-	public static final String SELECT_ALL = "SELECT nit,nombre,apellido,telefono FROM clientes ORDER BY nombre,apellido";
-	public static final String INSERT = "INSERT INTO clientes(nit,nombre,apellido,telefono) VALUES(?,?,?,?)";
-	public static final String DELETE = "DELETE FROM clientes WHERE nit = ?";
-	public static final String UPDATE = "UPDATE clientes SET nombre=?,apellido=?,telefono=? WHERE nit = ?";
+	public static final String SELECT = "SELECT nombre_cliente,apellido_cliente,telefono_cliente FROM clientes WHERE nit_cliente = ?";
+	public static final String SELECT_ALL = "SELECT nit_cliente,nombre_cliente,apellido_cliente,telefono_cliente FROM clientes ORDER BY nombre_cliente,apellido_cliente";
+	public static final String INSERT = "INSERT INTO clientes(nit_cliente,nombre_cliente,apellido_cliente,telefono_cliente) VALUES(?,?,?,?)";
+	public static final String DELETE = "DELETE FROM clientes WHERE nit_cliente = ?";
+	public static final String UPDATE = "UPDATE clientes SET nombre_cliente=?,apellido_cliente=?,telefono_cliente=? WHERE nit_cliente = ?";
 	
 	private Connection conexion;
 	
@@ -35,8 +35,8 @@ public class ClienteDAO {
 			ResultSet rs = st.executeQuery();
 			if(rs.next())
 				clienteOpt = Optional.of(
-						new Cliente(nit,rs.getString("nombre"),rs.getString("apellido"),
-								rs.getString("telefono")));
+						new Cliente(nit,rs.getString("nombre_cliente"),rs.getString("apellido_cliente"),
+								rs.getString("telefono_cliente")));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -49,8 +49,8 @@ public class ClienteDAO {
 			ResultSet rs = st.executeQuery(SELECT_ALL);
 			while(rs.next())
 				clientes.add(
-						new Cliente(rs.getString("nit"),rs.getString("nombre"),
-								rs.getString("apellido"),rs.getString("telefono")));
+						new Cliente(rs.getString("nit_cliente"),rs.getString("nombre_cliente"),
+								rs.getString("apellido_cliente"),rs.getString("telefono_cliente")));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
