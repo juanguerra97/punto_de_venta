@@ -140,31 +140,3 @@ CREATE TABLE detalle_compra(
     CONSTRAINT compra_detalle_fk FOREIGN KEY(numero_compra)
         REFERENCES compras(numero)
 );
-
---DROP TABLE detalle_compra;
---DROP TABLE compras;
---DROP TRIGGER verif_costo_less_precio_detev;
---DROP TABLE detalle_venta;
---DROP TABLE ventas;
---DROP TABLE existencias;
---DROP TRIGGER verif_costo_less_precio_pres;
---DROP TABLE presentaciones;
---DROP TABLE productos;
---DROP TABLE clientes;
---DROP TABLE proveedores;
---DROP TABLE sucursales;
---DROP SEQUENCE sucursal_id_seq;
---DROP SEQUENCE proveedor_id_seq;
---DROP SEQUENCE producto_id_seq;
---DROP SEQUENCE presentacion_id_seq;
---DROP SEQUENCE numero_venta_seq;
---DROP SEQUENCE numero_compra_seq;
-
---SELECT id_presentacion,id_sucursal,cantidad FROM (SELECT id_presentacion,id_sucursal,cantidad FROM (SELECT id_presentacion FROM (SELECT id_producto FROM productos WHERE nombre = 'PEPSI' AND marca = 'PEPSICO') NATURAL JOIN presentaciones WHERE presentaciones.nombre = 'LATA') NATURAL JOIN existencias) NATURAL JOIN (SELECT id_sucursal FROM sucursales WHERE nombre = 'LA DEMOCRACIA');
-
---SELECT id_presentacion,id_sucursal,cantidad FROM (SELECT id_presentacion FROM existencias NATURAL JOIN presentaciones WHERE nombre = 'PEPSI' AND marca = 'PEPSICO') NATURAL JOIN productos;
---SELECT id_sucursal,sucursales.nombre AS nombre FROM (SELECT id_sucursal FROM presentaciones NATURAL JOIN existencias WHERE id_presentacion = 1) NATURAL JOIN sucursales;
---INSERT INTO clientes(nit,nombre,apellido,telefono) VALUES('1234-k','José','Canales','12345678');
---INSERT INTO clientes(nit,nombre,apellido,telefono) VALUES('1234-k','José','Canales','12345678');
---SELECT DISTINCT(marca) AS nombre_marca FROM productos WHERE REGEXP_LIKE(marca,'^.*') ORDER BY nombre_marca
--- SELECT sucursal_id_seq.NEXTVAL AS val FROM DUAL;
