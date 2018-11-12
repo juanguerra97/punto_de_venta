@@ -5,15 +5,12 @@ import java.math.BigDecimal;
 import java.sql.SQLException;
 
 import org.controlsfx.control.table.TableRowExpanderColumn;
-import org.controlsfx.control.textfield.TextFields;
 
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -21,7 +18,6 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -132,10 +128,11 @@ public class ProductosController {
     private Stage windowNuevaExistencia;
     private NuevaExistenciaController controllerNuevaExistencia;
     
-    private TableRowExpanderColumn.TableRowDataFeatures<Producto> param = null;
+    private EditorProducto editorProducto;
+    private TableRowExpanderColumn.TableRowDataFeatures<Producto> expanderColProducto = null;
     
     private EditorPresentacion editorPresentacion;
-    private TableRowExpanderColumn.TableRowDataFeatures<Presentacion> expanderPresentacion = null;
+    private TableRowExpanderColumn.TableRowDataFeatures<Presentacion> expanderColPresentacion = null;
     
     public void updateExistencias() {
     	if(tablaProductos.getSelectionModel().getSelectedItem() != null) {
@@ -181,104 +178,54 @@ public class ProductosController {
     	});
     }
     
-    private GridPane createEditorProducto(TableRowExpanderColumn.TableRowDataFeatures<Producto> param) {
+    private GridPane createEditorProducto(TableRowExpanderColumn
+    		.TableRowDataFeatures<Producto> expanderCol) {
         
-    	param.expandedProperty().addListener((ob,viejo,nuevo)->{
-    		if(!nuevo) {
-    			ProductosController.this.param = null;
+    	expanderCol.expandedProperty()
+    	.addListener((o,oldExpanded,newExpanded)->{
+    		if(!newExpanded) {
+    			expanderColProducto = null;
     		}
     	});
     	
-    	if(ProductosController.this.param != null)
-    		if(ProductosController.this.param.isExpanded())
-    			ProductosController.this.param.toggleExpanded();
+    	if(expanderColProducto != null) {
+    		if(expanderColProducto.isExpanded()) {
+    			expanderColProducto.toggleExpanded();
+    		}
+    	}
     	
     	tablaProductos.requestFocus();
     	tablaProductos.getSelectionModel().clearSelection();
-    	ProductosController.this.param = param;
-    	
-    	GridPane editor = new GridPane();
-        editor.setPadding(new Insets(10));
-        editor.setHgap(10);
-        editor.setVgap(5);
+    	expanderColProducto = expanderCol;
 
-        Producto producto = param.getValue();
+        final Producto producto = expanderCol.getValue();
         tablaProductos.getSelectionModel().select(producto);
-
-        TextField fieldNombre = TextFields.createClearableTextField(); 
-        TextField fieldMarca = TextFields.createClearableTextField();
+        editorProducto.setProducto(producto);
         
-        fieldNombre.setText(producto.getNombre());
-        fieldMarca.setText(producto.getMarca());
-
-        editor.addRow(0, new Label("Nombre"), fieldNombre);
-        editor.addRow(1, new Label("marca"), fieldMarca);
-
-        Button btnActualizar = new Button("Actualizar");
-        btnActualizar.setOnAction(event -> {
-        	final Producto actualizado = new Producto(producto.getId(),
-        			fieldNombre.getText().trim().toUpperCase(),
-        			fieldMarca.getText().trim().toUpperCase());
-        	manager.producto().ifPresent(dao -> {
-        		try {
-					dao.update(actualizado);
-					producto.setNombre(actualizado.getNombre());
-					producto.setMarca(actualizado.getMarca());
-					Main.notificar("Se actualizó un producto");
-					if(checkItemFiltrar.isSelected()) {
-						String marca = listaMarcas.getSelectionModel().getSelectedItem();
-						if(marca != null && !producto.getMarca().equals(marca))
-							productos.remove(producto);
-					}
-					tablaProductos.requestFocus();
-					param.toggleExpanded();
-				} catch (SQLException e) {
-					Main.notificar(e.getMessage());
-					fieldNombre.selectAll();
-					fieldNombre.requestFocus();
-					e.printStackTrace();
-				}
-        	});            
-        });
-        btnActualizar.setDisable(true);
-        
-        fieldNombre.textProperty().addListener((ob,oldText,newText)->{
-        	btnActualizar.setDisable(newText.trim().isEmpty() ||
-        			fieldMarca.getText().trim().isEmpty());
-        });
-        
-        fieldMarca.textProperty().addListener((ob,oldText,newText)->{
-        	btnActualizar.setDisable(newText.trim().isEmpty() ||
-        			fieldNombre.getText().trim().isEmpty());
-        });
-
-        Button btnCancelar = new Button("Cancelar");
-        btnCancelar.setOnAction(event -> {
-        	tablaProductos.requestFocus();
-        	param.toggleExpanded();
-        });
-
-        editor.addRow(2, btnActualizar, btnCancelar);
-
-        return editor;
+        return editorProducto;
     }
     
-    private GridPane createEditorPresentacion(TableRowExpanderColumn.TableRowDataFeatures<Presentacion> param) {
+    private GridPane createEditorPresentacion(TableRowExpanderColumn
+    		.TableRowDataFeatures<Presentacion> expanderCol) {
     	
-    	param.expandedProperty().addListener((ob,viejo,nuevo)->{
-    		if(!nuevo)
-    			expanderPresentacion = null;
+    	expanderCol.expandedProperty()
+    	.addListener((o,oldExpanded,newExpanded)->{
+    		if(!newExpanded) {
+    			expanderColPresentacion = null;
+    		}
     	});
     	
-    	if(expanderPresentacion != null)
-    		if(expanderPresentacion.isExpanded())
-    			expanderPresentacion.toggleExpanded();
+    	if(expanderColPresentacion != null) {
+    		if(expanderColPresentacion.isExpanded()) {
+    			expanderColPresentacion.toggleExpanded();
+    		}
+    	}
     	
     	tablaPresentaciones.requestFocus();
     	tablaPresentaciones.getSelectionModel().clearSelection();
-    	expanderPresentacion = param;
+    	expanderColPresentacion = expanderCol;
     	
-    	final Presentacion pres = param.getValue();
+    	final Presentacion pres = expanderCol.getValue();
     	tablaPresentaciones.getSelectionModel().select(pres);
     	editorPresentacion.setPresentacion(pres);
     	
@@ -295,112 +242,166 @@ public class ProductosController {
 		presentaciones = tablaPresentaciones.getItems();
 		existencias = tablaExistencias.getItems();
 		
-		tablaProductos.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-		colIdProducto.setCellValueFactory(new PropertyValueFactory<Producto,Integer>("id"));
-		colNombreProducto.setCellValueFactory(new PropertyValueFactory<Producto,String>("nombre"));
-		colMarcaProducto.setCellValueFactory(new PropertyValueFactory<Producto,String>("marca"));
+		tablaProductos.getSelectionModel()
+			.setSelectionMode(SelectionMode.SINGLE);
+		colIdProducto.setCellValueFactory(
+				new PropertyValueFactory<Producto,Integer>("id"));
+		colNombreProducto.setCellValueFactory(
+				new PropertyValueFactory<Producto,String>("nombre"));
+		colMarcaProducto.setCellValueFactory(
+				new PropertyValueFactory<Producto,String>("marca"));
 		
-		TableRowExpanderColumn<Producto> expColProducto = new TableRowExpanderColumn<>(this::createEditorProducto);
+		editorProducto = new EditorProducto(event -> {
+			final Producto producto = expanderColProducto.getValue();
+			final Producto actualizado = new Producto(producto.getId(), 
+					editorProducto.getNombre().trim().toUpperCase(),
+					editorProducto.getMarca().trim().toUpperCase());
+			manager.producto().ifPresent(dao -> {
+				try {
+					dao.update(actualizado);
+					producto.setNombre(actualizado.getNombre());
+					producto.setMarca(actualizado.getMarca());
+					Main.notificar("Se actualizó un producto");
+					if (checkItemFiltrar.isSelected()) {
+						String marca = listaMarcas.getSelectionModel()
+								.getSelectedItem();
+						if (marca != null && !producto.getMarca().equals(marca))
+							productos.remove(producto);
+					}
+					tablaProductos.requestFocus();
+					expanderColProducto.toggleExpanded();
+				} catch (SQLException ex) {
+					Main.notificar(ex.getMessage());
+					editorProducto.focusNombre();
+					ex.printStackTrace();
+				}
+			});
+		}, e -> {
+			tablaProductos.requestFocus();
+			expanderColProducto.toggleExpanded();
+		});
+		
+		TableRowExpanderColumn<Producto> expColProducto = 
+				new TableRowExpanderColumn<>(this::createEditorProducto);
 		expColProducto.setMinWidth(25);
 		expColProducto.setMaxWidth(25);
-		tablaProductos.getColumns().setAll(expColProducto,colIdProducto,colNombreProducto,colMarcaProducto);
+		tablaProductos.getColumns().setAll(expColProducto,
+				colIdProducto,colNombreProducto,colMarcaProducto);
 		
-		tablaPresentaciones.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-		colNombrePresentacion.setCellValueFactory(new PropertyValueFactory<Presentacion,String>("nombre"));
-		colPrecioPresentacion.setCellValueFactory(new PropertyValueFactory<Presentacion,BigDecimal>("precio"));
-		colCostoPresentacion.setCellValueFactory(new PropertyValueFactory<Presentacion,BigDecimal>("costo"));
+		tablaPresentaciones.getSelectionModel()
+			.setSelectionMode(SelectionMode.SINGLE);
+		colNombrePresentacion.setCellValueFactory(
+				new PropertyValueFactory<Presentacion,String>("nombre"));
+		colPrecioPresentacion.setCellValueFactory(
+				new PropertyValueFactory<Presentacion,BigDecimal>("precio"));
+		colCostoPresentacion.setCellValueFactory(
+				new PropertyValueFactory<Presentacion,BigDecimal>("costo"));
 		
-		editorPresentacion = new EditorPresentacion(
-				e -> {
-					final Presentacion pres = expanderPresentacion.getValue();
-					final Presentacion actualizada = new Presentacion(pres.getId(), 
-							pres.getIdProducto(), editorPresentacion.getNombre().trim().toUpperCase(), 
-							new BigDecimal(editorPresentacion.getPrecio().trim()), 
-							new BigDecimal(editorPresentacion.getCosto().trim()));
-		        	manager.presentacion().ifPresent(dao -> {
-		        		try {
-		        			dao.update(actualizada);
-		        			pres.setNombre(actualizada.getNombre());
-		        			pres.setCosto(actualizada.getCosto());
-		        			pres.setPrecio(actualizada.getPrecio());
-							Main.notificar("Presentación actualizada");
-							tablaPresentaciones.requestFocus();
-							expanderPresentacion.toggleExpanded();
-						} catch (SQLException ex) {
-							Main.notificar(ex.getMessage());
-							editorPresentacion.focusNombre();
-							ex.printStackTrace();
-						}
-		        	}); 
-				}, 
-				e -> {
+		editorPresentacion = new EditorPresentacion(e -> {
+			final Presentacion pres = expanderColPresentacion.getValue();
+			final Presentacion actualizada = new Presentacion(pres.getId(), 
+					pres.getIdProducto(),
+					editorPresentacion.getNombre().trim().toUpperCase(),
+					new BigDecimal(editorPresentacion.getPrecio().trim()),
+					new BigDecimal(editorPresentacion.getCosto().trim()));
+			manager.presentacion().ifPresent(dao -> {
+				try {
+					dao.update(actualizada);
+					pres.setNombre(actualizada.getNombre());
+					pres.setCosto(actualizada.getCosto());
+					pres.setPrecio(actualizada.getPrecio());
+					Main.notificar("Presentación actualizada");
 					tablaPresentaciones.requestFocus();
-		        	expanderPresentacion.toggleExpanded();
-				});
+					expanderColPresentacion.toggleExpanded();
+				} catch (SQLException ex) {
+					Main.notificar(ex.getMessage());
+					editorPresentacion.focusNombre();
+					ex.printStackTrace();
+				}
+			});
+		}, e -> {
+			tablaPresentaciones.requestFocus();
+			expanderColPresentacion.toggleExpanded();
+		});
 		
-		TableRowExpanderColumn<Presentacion> expColPresentacion = new TableRowExpanderColumn<>(this::createEditorPresentacion);
+		TableRowExpanderColumn<Presentacion> expColPresentacion = 
+				new TableRowExpanderColumn<>(this::createEditorPresentacion);
 		expColPresentacion.setMinWidth(25);
 		expColPresentacion.setMaxWidth(25);
-		tablaPresentaciones.getColumns().setAll(expColPresentacion,colNombrePresentacion,colCostoPresentacion,colPrecioPresentacion);
+		tablaPresentaciones.getColumns().setAll(expColPresentacion,
+				colNombrePresentacion,colCostoPresentacion,
+				colPrecioPresentacion);
 		
-		tablaExistencias.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-		colSucursalExistencia.setCellValueFactory(new PropertyValueFactory<Existencia,Integer>("idSucursal"));
-		colCantidadExistencia.setCellValueFactory(new PropertyValueFactory<Existencia,Integer>("cantidad"));
+		tablaExistencias.getSelectionModel().setSelectionMode(
+				SelectionMode.SINGLE);
+		colSucursalExistencia.setCellValueFactory(
+				new PropertyValueFactory<Existencia,Integer>("idSucursal"));
+		colCantidadExistencia.setCellValueFactory(
+				new PropertyValueFactory<Existencia,Integer>("cantidad"));
 		
-		tablaProductos.getSelectionModel().selectedItemProperty().addListener((obj,viejo,nuevo)->{
-			if(nuevo != null) {
-				cargarPresentaciones(nuevo);
+		tablaProductos.getSelectionModel().selectedItemProperty()
+		.addListener((o,oldProdSelected,newProdSelected)->{
+			if(newProdSelected != null) {
+				cargarPresentaciones(newProdSelected);
 			}else {
 				presentaciones.clear();
 			}
 		});
 		
 		listaMarcas.getSelectionModel().selectedItemProperty()
-			.addListener((ob,oldSelection,newSelection)->{
-			boolean filtro = checkItemFiltrar.isSelected();
-			if(filtro) {
-				if(newSelection == null)
+		.addListener((o,oldMarcaSelected,newMarcaSelected)->{
+			boolean hayFiltro = checkItemFiltrar.isSelected();
+			if(hayFiltro) {
+				if(newMarcaSelected == null) {
 					productos.clear();
-				else
-					cargarProductos(newSelection);
+				}else {
+					cargarProductos(newMarcaSelected);
+				}
 			}
 		});
 		
-		tablaPresentaciones.getSelectionModel().selectedItemProperty().addListener((obj,viejo,nuevo)->{
-			if(nuevo != null) {
-				cargarExistencias(nuevo);
+		tablaPresentaciones.getSelectionModel().selectedItemProperty()
+		.addListener((o,oldPresSelected,newPresSelected)->{
+			if(newPresSelected != null) {
+				cargarExistencias(newPresSelected);
 			}else {
 				existencias.clear();
 			}
 		});
 		
 		tablaExistencias.getSelectionModel().selectedItemProperty()
-			.addListener((ob,oldSelection,newSelection)->{
+		.addListener((o,oldExisSelected,newExisSelected)->{
 			boxExistencias.getChildren().remove(boxNombreSucursal);
-			if(newSelection != null)
+			if(newExisSelected != null)
 				manager.sucursal().ifPresent(dao -> {
-					dao.select(newSelection.getIdSucursal()).ifPresent(suc -> {
+					dao.select(newExisSelected.getIdSucursal())
+					.ifPresent(suc -> {
 						labelNombreSucursal.setText(suc.getNombre());
 						boxExistencias.getChildren().add(boxNombreSucursal);
 					});
 				});
 		});
 		
-		checkItemFiltrar.selectedProperty().addListener((ob,oldValue,newValue)->{
-			if(newValue) {
-				final String marca = listaMarcas.getSelectionModel().getSelectedItem();
-				if(marca != null)
+		checkItemFiltrar.selectedProperty()
+		.addListener((o,oldFiltroSelected,newFiltroSelected)->{
+			if(newFiltroSelected) {
+				final String marca = listaMarcas.getSelectionModel()
+						.getSelectedItem();
+				if(marca != null) {
 					cargarProductos(marca);
-				else
+				}else {
 					productos.clear();
+				}
 			} else {
 				cargarProductos();
 			}
 		});
 		
 		try {
-			FXMLLoader loaderNuevoProducto = new FXMLLoader(getClass().getResource("/fxml/productos/NuevoProducto.fxml"));
-			Scene sceneNuevoProducto = new Scene(loaderNuevoProducto.load(),380,200);
+			FXMLLoader loaderNuevoProducto = new FXMLLoader(getClass()
+					.getResource("/fxml/productos/NuevoProducto.fxml"));
+			Scene sceneNuevoProducto = 
+					new Scene(loaderNuevoProducto.load(),380,200);
 			controllerNuevoProducto = loaderNuevoProducto.getController();
 			windowNuevoProducto = new Stage();
 			windowNuevoProducto.setScene(sceneNuevoProducto);
@@ -410,8 +411,10 @@ public class ProductosController {
 			windowNuevoProducto.setMinHeight(200);
 			windowNuevoProducto.initModality(Modality.APPLICATION_MODAL);
 			
-			FXMLLoader loaderNuevaPresentacion = new FXMLLoader(getClass().getResource("/fxml/productos/NuevaPresentacion.fxml"));
-			Scene sceneNuevaPresentacion = new Scene(loaderNuevaPresentacion.load(),380,220);
+			FXMLLoader loaderNuevaPresentacion = new FXMLLoader(getClass()
+					.getResource("/fxml/productos/NuevaPresentacion.fxml"));
+			Scene sceneNuevaPresentacion = 
+					new Scene(loaderNuevaPresentacion.load(),380,220);
 			controllerNuevaPresentacion = loaderNuevaPresentacion.getController();
 			windowNuevaPresentacion = new Stage();
 			windowNuevaPresentacion.setScene(sceneNuevaPresentacion);
@@ -421,8 +424,10 @@ public class ProductosController {
 			windowNuevaPresentacion.setMinHeight(220);
 			windowNuevaPresentacion.initModality(Modality.APPLICATION_MODAL);
 			
-			FXMLLoader loaderNuevaExistencia = new FXMLLoader(getClass().getResource("/fxml/productos/NuevaExistencia.fxml"));
-			Scene sceneNuevaExistencia = new Scene(loaderNuevaExistencia.load(),380,200);
+			FXMLLoader loaderNuevaExistencia = new FXMLLoader(getClass()
+					.getResource("/fxml/productos/NuevaExistencia.fxml"));
+			Scene sceneNuevaExistencia = 
+					new Scene(loaderNuevaExistencia.load(),380,200);
 			controllerNuevaExistencia = loaderNuevaExistencia.getController();
 			windowNuevaExistencia = new Stage();
 			windowNuevaExistencia.setScene(sceneNuevaExistencia);
