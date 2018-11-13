@@ -13,13 +13,12 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
 
 <BorderPane prefHeight="450.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jguerra.punto_de_venta.gui.ventas.VentasController">
 	<center>
             <SplitPane dividerPositions="0.4" BorderPane.alignment="CENTER">
                <items>
-                  <VBox fx:id="boxVentas" maxWidth="600.0" minWidth="250.0" spacing="5.0">
+                  <VBox maxWidth="600.0" minWidth="250.0" spacing="5.0">
                      <padding>
                         <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
                      </padding>
@@ -52,21 +51,6 @@
                               </ContextMenu>
                            </contextMenu>
                         </TableView>
-                  <HBox fx:id="boxClienteSucursal" alignment="CENTER" spacing="2.0">
-                     <children>
-                        <Label fx:id="labelCliente" text="Cliente">
-                           <font>
-                              <Font size="10.0" />
-                           </font>
-                        </Label>
-                        <Separator opacity="0.48" HBox.hgrow="ALWAYS" />
-                        <Label fx:id="labelSucursal" text="Sucursal">
-                           <font>
-                              <Font size="10.0" />
-                           </font>
-                        </Label>
-                     </children>
-                  </HBox>
                      </children>
                   </VBox>
                   <VBox minWidth="440.0" spacing="5.0">

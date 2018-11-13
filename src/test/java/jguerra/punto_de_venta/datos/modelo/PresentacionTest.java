@@ -12,10 +12,13 @@ public class PresentacionTest {
 	@Test
 	public void equalsPresentacion() {
 		
-		Presentacion p1 = new Presentacion(1, 2, "BOTELLA 500ML", BigDecimal.valueOf(16), BigDecimal.valueOf(13.50));
-		Presentacion p2 = new Presentacion(1, 2, "LATA", BigDecimal.valueOf(14), BigDecimal.valueOf(10));
-		Presentacion p3 = new Presentacion(2, 2, "BOTELLA 500ML", BigDecimal.valueOf(16), BigDecimal.valueOf(13.50));
-		Presentacion p4 = new Presentacion(5, 20, "BOTELLA 500ML", BigDecimal.valueOf(16), BigDecimal.valueOf(13.50));
+		Producto prod1 = new Producto(2,"COCA","COCA-COLA");
+		Producto prod2 = new Producto(20,"PEPSI","PEPSICO");
+		
+		Presentacion p1 = new Presentacion(1, prod1, "BOTELLA 500ML", BigDecimal.valueOf(16), BigDecimal.valueOf(13.50));
+		Presentacion p2 = new Presentacion(1, prod1, "LATA", BigDecimal.valueOf(14), BigDecimal.valueOf(10));
+		Presentacion p3 = new Presentacion(2, prod1, "BOTELLA 500ML", BigDecimal.valueOf(16), BigDecimal.valueOf(13.50));
+		Presentacion p4 = new Presentacion(5, prod2, "BOTELLA 500ML", BigDecimal.valueOf(16), BigDecimal.valueOf(13.50));
 		
 		assertEquals(p1, p2);
 		assertEquals(p1, p3);

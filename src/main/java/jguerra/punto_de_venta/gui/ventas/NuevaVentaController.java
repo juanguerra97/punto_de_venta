@@ -140,6 +140,7 @@ public class NuevaVentaController {
     	detalles.clear();
     	spinnerValueFactory.setValue(1);
     	btnListo.setDisable(true);
+    	fieldNit.clear();
     	fieldFiltroProductos.clear();
     	choiceSucursal.requestFocus();
     }
@@ -173,7 +174,7 @@ public class NuevaVentaController {
     private void cargarPresentaciones(final Producto producto) {
     	manager.presentacion().ifPresent(dao -> {
     		listaPresentaciones.getItems()
-    			.setAll(dao.selectAllByProducto(producto.getId()));
+    			.setAll(dao.selectAllByProducto(producto));
     	});
     }
 
@@ -185,46 +186,60 @@ public class NuevaVentaController {
     	detalles = tablaDetalles.getItems();
     	total = BigDecimal.ZERO;
     	
-    	tablaDetalles.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-    	colProducto.setCellValueFactory(new PropertyValueFactory<>("nombreProducto"));
-    	colMarca.setCellValueFactory(new PropertyValueFactory<>("marcaProducto"));
-    	colPresentacion.setCellValueFactory(new PropertyValueFactory<>("presentacionProducto"));
-    	colCosto.setCellValueFactory(new PropertyValueFactory<>("costo"));
-    	colPrecio.setCellValueFactory(new PropertyValueFactory<>("precio"));
-    	colCantidad.setCellValueFactory(new PropertyValueFactory<>("cantidad"));
+    	tablaDetalles.getSelectionModel()
+    		.setSelectionMode(SelectionMode.SINGLE);
+    	colProducto.setCellValueFactory(
+    			new PropertyValueFactory<>("nombreProducto"));
+    	colMarca.setCellValueFactory(
+    			new PropertyValueFactory<>("marcaProducto"));
+    	colPresentacion.setCellValueFactory(
+    			new PropertyValueFactory<>("presentacionProducto"));
+    	colCosto.setCellValueFactory(
+    			new PropertyValueFactory<>("costo"));
+    	colPrecio.setCellValueFactory(
+    			new PropertyValueFactory<>("precio"));
+    	colCantidad.setCellValueFactory(
+    			new PropertyValueFactory<>("cantidad"));
     	
-    	tablaProductos.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+    	tablaProductos.getSelectionModel()
+    		.setSelectionMode(SelectionMode.SINGLE);
     	colId.setCellValueFactory(new PropertyValueFactory<>("id"));
-    	colNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
-    	colMarcaProducto.setCellValueFactory(new PropertyValueFactory<>("marca"));
-    	tablaProductos.getSelectionModel().selectedItemProperty().addListener(
-    			(ob,oldSelection,newSelection)->{
-    		if(newSelection == null) {
+    	colNombre.setCellValueFactory(
+    			new PropertyValueFactory<>("nombre"));
+    	colMarcaProducto.setCellValueFactory(
+    			new PropertyValueFactory<>("marca"));
+    	tablaProductos.getSelectionModel().selectedItemProperty()
+    	.addListener((o,oldProdSelected,newProdSelected)->{
+    		if(newProdSelected == null) {
     			listaPresentaciones.getItems().clear();
     		}else {
-    			cargarPresentaciones(newSelection);
+    			cargarPresentaciones(newProdSelected);
     		}
     	});
     	
-    	listaPresentaciones.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+    	listaPresentaciones.getSelectionModel()
+    		.setSelectionMode(SelectionMode.SINGLE);
     	listaPresentaciones.getSelectionModel().selectedItemProperty()
-    		.addListener((ob,oldSelection,newSelection)->{
-    		boolean sinSeleccion = newSelection == null;
+    	.addListener((o,oldPresSelected,newPresSelected)->{
+    		boolean sinSeleccion = newPresSelected == null;
     		spinnerCantidad.setDisable(sinSeleccion);
     		btnAgregar.setDisable(sinSeleccion);
     		if(!sinSeleccion) {
     			final Sucursal sucursal = choiceSucursal.getValue();
-    			final Producto prod = tablaProductos.getSelectionModel().getSelectedItem();
-    	    	final Presentacion pres = newSelection;
+    			final Producto prod = tablaProductos.getSelectionModel()
+    					.getSelectedItem();
+    	    	final Presentacion pres = newPresSelected;
     	    	
     	    	final DetalleVenta detalle = new DetalleVenta(prod.getNombre(), prod.getMarca(), 
     	    			pres.getNombre(), pres.getCosto(), pres.getPrecio(),spinnerCantidad.getValue());
     	    	manager.existencia().ifPresent(dao -> {
-    	    		Existencia exis = dao.selectByDetalle(detalle, sucursal).orElse(null);
-    	    		boolean exisIsNull = exis == null;
+    	    		Existencia existencia = 
+    	    				dao.selectByDetalle(detalle, sucursal)
+    	    				.orElse(null);
+    	    		boolean existenciaIsNull = existencia == null;
     	    		boolean agotado = false;
-    	    		if(!exisIsNull) {
-    	    			int max = exis.getCantidad();
+    	    		if(!existenciaIsNull) {
+    	    			int max = existencia.getCantidad();
     	    			int indice = detalles.indexOf(detalle);
     	    			if(indice >= 0) {
     	    				max -= detalles.get(indice).getCantidad();
@@ -232,21 +247,23 @@ public class NuevaVentaController {
     	    			agotado = max <= 0;
     	    			spinnerValueFactory.setMax(max);
     	    		}
-    	    		spinnerCantidad.setDisable(exisIsNull || agotado);
-    	    		btnAgregar.setDisable(exisIsNull || agotado);
+    	    		spinnerCantidad.setDisable(existenciaIsNull || agotado);
+    	    		btnAgregar.setDisable(existenciaIsNull || agotado);
     	    	});;
     		}
     		spinnerValueFactory.setValue(1);
     	});
     	
     	choiceCliente.getSelectionModel().selectedItemProperty()
-    		.addListener((ob,oldSeleccion,newSeleccion)->{
-    		if(newSeleccion != null) {
-    			if(!fieldNit.getText().trim().equalsIgnoreCase(newSeleccion.getNit()))
-    				fieldNit.setText(newSeleccion.getNit());
+    		.addListener((o,oldClienteSelected,newClienteSelected)->{
+    		if(newClienteSelected != null) {
+    			if(!fieldNit.getText().trim()
+    					.equalsIgnoreCase(newClienteSelected.getNit()))
+    				fieldNit.setText(newClienteSelected.getNit());
     		}
-    		btnListo.setDisable(newSeleccion == null || detalles.size() <= 0
-    				|| choiceSucursal.getSelectionModel().getSelectedItem() == null);
+    		btnListo.setDisable(newClienteSelected == null 
+    				|| detalles.size() <= 0 || choiceSucursal
+    				.getSelectionModel().getSelectedItem() == null);
     	});
     	
     	choiceSucursal.getSelectionModel().selectedItemProperty()
@@ -262,7 +279,7 @@ public class NuevaVentaController {
     	
     	Fields.setupClearButtonField(fieldNit);
     	
-    	fieldNit.textProperty().addListener((ob,oldText,newText)->{
+    	fieldNit.textProperty().addListener((o,oldText,newText)->{
     		boolean nitValido = Validacion.validarNit(newText.trim());
     		boolean existeCliente = true;
     		final Cliente c = choiceCliente.getValue();
@@ -303,8 +320,8 @@ public class NuevaVentaController {
     private void onListo(ActionEvent event) {
     	manager.venta().ifPresent(dao -> {
     		final Sucursal sucursal = choiceSucursal.getValue();
-    		venta = new Venta(choiceCliente.getValue().getNit(),
-    				sucursal.getId(), pickerFecha.getValue(), total);
+    		venta = new Venta(choiceCliente.getValue(),
+    				sucursal, pickerFecha.getValue(), total);
     		try {
 				int numero = dao.insert(venta, detalles);
 				venta.setNumero(numero);
@@ -333,12 +350,16 @@ public class NuevaVentaController {
     @FXML
     private void onAgregar(ActionEvent event) {
     	
-    	final Producto prod = tablaProductos.getSelectionModel().getSelectedItem();
-    	final Presentacion pres = listaPresentaciones.getSelectionModel().getSelectedItem();
+    	final Producto prod = tablaProductos.getSelectionModel()
+    			.getSelectedItem();
+    	final Presentacion pres = listaPresentaciones
+    			.getSelectionModel().getSelectedItem();
     	
-    	final DetalleVenta detalle = new DetalleVenta(prod.getNombre(), prod.getMarca(), 
-    			pres.getNombre(), pres.getCosto(), pres.getPrecio(),spinnerCantidad.getValue());
-    	total = total.add(detalle.getPrecio().multiply(new BigDecimal(detalle.getCantidad())));
+    	final DetalleVenta detalle = new DetalleVenta(prod.getNombre(), 
+    			prod.getMarca(), pres.getNombre(), pres.getCosto(),
+    			 pres.getPrecio(),spinnerCantidad.getValue());
+    	total = total.add(detalle.getPrecio().multiply(
+    			new BigDecimal(detalle.getCantidad())));
     	
     	int indice = detalles.indexOf(detalle);
     	

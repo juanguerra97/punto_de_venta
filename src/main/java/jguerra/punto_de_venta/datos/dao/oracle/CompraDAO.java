@@ -13,17 +13,25 @@ import java.util.List;
 import jguerra.punto_de_venta.datos.dao.oracle.sequences.SeqNumeroCompra;
 import jguerra.punto_de_venta.datos.modelo.Compra;
 import jguerra.punto_de_venta.datos.modelo.DetalleCompra;
+import jguerra.punto_de_venta.datos.modelo.Proveedor;
 
 public class CompraDAO {
 	
-	public static final String SELECT_ALL = "SELECT numero_compra,id_proveedor,fecha_compra,total_compra"
-			+ " FROM compras ORDER BY numero_compra";
-	public static final String SELECT_ALL_BY_FECHA = "SELECT numero_compra,id_proveedor,total_compra"
-			+ " FROM compras WHERE fecha_compra = ?";
-	public static final String INSERT = "INSERT INTO compras(numero_compra,id_proveedor,fecha_compra,total_compra)"
+	public static final String SELECT_ALL = "SELECT numero_compra,"
+			+ "id_proveedor,nombre_proveedor,telefono_proveedor,"
+			+ " fecha_compra,total_compra FROM compras"
+			+ " NATURAL JOIN proveedores ORDER BY numero_compra";
+	public static final String SELECT_ALL_BY_FECHA = 
+			"SELECT numero_compra,id_proveedor,nombre_proveedor,"
+			+ "telefono_proveedor,total_compra FROM compras"
+			+ " NATURAL JOIN proveedores WHERE fecha_compra = ?";
+	public static final String INSERT = "INSERT INTO compras"
+			+ "(numero_compra,id_proveedor,fecha_compra,total_compra)"
 			+ " VALUES(?,?,?,?)";
-	public static final String INSERT_DETALLECOMPRA = "INSERT INTO detalle_compra(numero_compra,nombre_producto"
-			+ ",marca_producto,presentacion_producto,nombre_sucursal,costo,cantidad) VALUES(?,?,?,?,?,?,?)";
+	public static final String INSERT_DETALLECOMPRA = "INSERT INTO"
+			+ " detalle_compra(numero_compra,nombre_producto"
+			+ ",marca_producto,presentacion_producto,nombre_sucursal,"
+			+ " costo,cantidad) VALUES(?,?,?,?,?,?,?)";
 
 	private Connection conexion;
 	
@@ -37,8 +45,12 @@ public class CompraDAO {
 		try(Statement st = conexion.createStatement()){
 			ResultSet rs = st.executeQuery(SELECT_ALL);
 			while(rs.next())
-				compras.add(new Compra(rs.getInt("numero_compra"),rs.getInt("id_proveedor"),
-						rs.getTimestamp("fecha_compra").toLocalDateTime().toLocalDate(),
+				compras.add(new Compra(rs.getInt("numero_compra"),
+						new Proveedor(rs.getInt("id_proveedor"),
+								rs.getString("nombre_proveedor"),
+								rs.getString("telefono_proveedor")),
+						rs.getTimestamp("fecha_compra")
+							.toLocalDateTime().toLocalDate(),
 						rs.getBigDecimal("total_compra")));
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -49,11 +61,15 @@ public class CompraDAO {
 	public List<Compra> selectAllByFecha(final LocalDate fecha){
 		assert fecha != null;
 		List<Compra> compras = new LinkedList<>();
-		try(PreparedStatement st = conexion.prepareStatement(SELECT_ALL_BY_FECHA)){
+		try(PreparedStatement st = 
+				conexion.prepareStatement(SELECT_ALL_BY_FECHA)){
 			st.setTimestamp(1,Timestamp.valueOf(fecha.atStartOfDay()));
 			ResultSet rs = st.executeQuery();
 			while(rs.next())
-				compras.add(new Compra(rs.getInt("numero_compra"),rs.getInt("id_proveedor"),
+				compras.add(new Compra(rs.getInt("numero_compra"),
+						new Proveedor(rs.getInt("id_proveedor"),
+								rs.getString("nombre_proveedor"),
+								rs.getString("telefono_proveedor")),
 						fecha, rs.getBigDecimal("total_compra")));
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -61,7 +77,8 @@ public class CompraDAO {
 		return compras;
 	}
 
-	public int insert(final Compra compra, final List<DetalleCompra> items) throws SQLException {
+	public int insert(final Compra compra, 
+			final List<DetalleCompra> items) throws SQLException {
 		assert compra != null;
 		assert items != null;
 		int numero = 0;
@@ -70,11 +87,13 @@ public class CompraDAO {
 			try(PreparedStatement st = conexion.prepareStatement(INSERT)){
 				numero = SeqNumeroCompra.instance(conexion).next();
 				st.setInt(1, numero);
-				st.setInt(2, compra.getIdProveedor());
-				st.setTimestamp(3, Timestamp.valueOf(compra.getFecha().atStartOfDay()));
+				st.setInt(2, compra.getProveedor().getId());
+				st.setTimestamp(3, Timestamp.valueOf(compra.getFecha()
+						.atStartOfDay()));
 				st.setBigDecimal(4, compra.getTotal());
 				st.executeUpdate();
-				try(final PreparedStatement st2 = conexion.prepareStatement(INSERT_DETALLECOMPRA)){
+				try(final PreparedStatement st2 = 
+						conexion.prepareStatement(INSERT_DETALLECOMPRA)){
 					for(DetalleCompra item : items) {
 						st2.setInt(1, numero);
 						st2.setString(2, item.getNombreProducto());

@@ -6,20 +6,21 @@ import java.time.LocalDate;
 public final class Compra {
 
 	private int numero;
-	private int idProveedor;
+	private Proveedor proveedor;
 	private LocalDate fecha;
 	private BigDecimal total;
 	
-	public Compra(final int numero, final int idProveedor,  
+	public Compra(final int numero, final Proveedor proveedor,  
 			final LocalDate fecha, final BigDecimal total) {
 		setNumero(numero);
-		setIdProveedor(idProveedor);
+		setProveedor(proveedor);
 		setFecha(fecha);
 		setTotal(total);
 	}
 	
-	public Compra(final int idProveedor, final LocalDate fecha, final BigDecimal total) {
-		this(0,idProveedor,fecha,total);
+	public Compra(final Proveedor proveedor, final LocalDate fecha, 
+			final BigDecimal total) {
+		this(0,proveedor,fecha,total);
 	}
 
 	public int getNumero() {
@@ -28,18 +29,18 @@ public final class Compra {
 	
 	public void setNumero(final int numero) {
 		if(numero < 0)
-			throw new IllegalArgumentException("El número de la compra no puede ser negativo");
+			throw new IllegalArgumentException(
+					"El número de la compra no puede ser negativo");
 		this.numero = numero;
 	}
 	
-	public int getIdProveedor() {
-		return idProveedor;
+	public Proveedor getProveedor() {
+		return proveedor;
 	}
 	
-	public void setIdProveedor(final int idProveedor) {
-		if(idProveedor < 0)
-			throw new IllegalArgumentException("El ID del proveedor no puede ser negativo");
-		this.idProveedor = idProveedor;
+	public void setProveedor(final Proveedor proveedor) {
+		assert proveedor != null;
+		this.proveedor = proveedor;
 	}
 	
 	public LocalDate getFecha() {
@@ -58,7 +59,8 @@ public final class Compra {
 	public void setTotal(final BigDecimal total) {
 		assert total != null;
 		if(total.compareTo(BigDecimal.ZERO) < 0)
-			throw new IllegalArgumentException("El total no puede ser negativo");
+			throw new IllegalArgumentException(
+					"El total no puede ser negativo");
 		this.total = total;
 	}
 

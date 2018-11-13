@@ -11,27 +11,23 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.DatePicker;
-import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import jguerra.punto_de_venta.datos.dao.oracle.DAOManager;
+import jguerra.punto_de_venta.datos.modelo.Cliente;
 import jguerra.punto_de_venta.datos.modelo.DetalleVenta;
+import jguerra.punto_de_venta.datos.modelo.Sucursal;
 import jguerra.punto_de_venta.datos.modelo.Venta;
 import jguerra.punto_de_venta.gui.Icono;
 import jguerra.punto_de_venta.gui.Main;
 
 public class VentasController {
-	
-	@FXML
-    private VBox boxVentas;
 	
 	@FXML
     private CheckBox checkFiltrar;
@@ -46,10 +42,10 @@ public class VentasController {
     private TableColumn<Venta, Integer> colNumero;
 
     @FXML
-    private TableColumn<Venta, String> colCliente;
+    private TableColumn<Venta, Cliente> colCliente;
 
     @FXML
-    private TableColumn<Venta, Integer> colSucursal;
+    private TableColumn<Venta, Sucursal> colSucursal;
 
     @FXML
     private TableColumn<Venta, LocalDate> colFecha;
@@ -63,14 +59,6 @@ public class VentasController {
     @FXML
     private MenuItem itemDeseleccionarVenta;
     
-    @FXML
-    private HBox boxClienteSucursal;
-
-    @FXML
-    private Label labelCliente;
-
-    @FXML
-    private Label labelSucursal;
 
     @FXML
     private TableView<DetalleVenta> tablaDetalles;
@@ -128,43 +116,45 @@ public class VentasController {
 		ventas = tablaVentas.getItems();
 		detalles = tablaDetalles.getItems();
 		
-		tablaVentas.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-		colNumero.setCellValueFactory(new PropertyValueFactory<>("numero"));
-		colCliente.setCellValueFactory(new PropertyValueFactory<>("nitCliente"));
-		colSucursal.setCellValueFactory(new PropertyValueFactory<>("idSucursal"));
-		colFecha.setCellValueFactory(new PropertyValueFactory<>("fecha"));
-		colTotal.setCellValueFactory(new PropertyValueFactory<>("total"));
-		tablaVentas.getSelectionModel().selectedItemProperty().addListener(
-				(ob,oldSelection,newSelection)->{
-			boxVentas.getChildren().remove(boxClienteSucursal);
-			if(newSelection != null) {
-				cargarDetallesVenta(newSelection);
-				manager.cliente().ifPresent(dao -> {
-					dao.select(newSelection.getNitCliente()).ifPresent(cliente -> {
-						labelCliente.setText(cliente.getNombre() + " " + cliente.getApellido());
-						manager.sucursal().ifPresent(daoSuc -> {
-							daoSuc.select(newSelection.getIdSucursal()).ifPresent(suc -> {
-								labelSucursal.setText(suc.getNombre());
-								boxVentas.getChildren().add(boxClienteSucursal);
-							});
-						});
-					});
-				});
-			}else
+		tablaVentas.getSelectionModel()
+			.setSelectionMode(SelectionMode.SINGLE);
+		colNumero.setCellValueFactory(
+				new PropertyValueFactory<>("numero"));
+		colCliente.setCellValueFactory(
+				new PropertyValueFactory<>("cliente"));
+		colSucursal.setCellValueFactory(
+				new PropertyValueFactory<>("sucursal"));
+		colFecha.setCellValueFactory(
+				new PropertyValueFactory<>("fecha"));
+		colTotal.setCellValueFactory(
+				new PropertyValueFactory<>("total"));
+		tablaVentas.getSelectionModel().selectedItemProperty()
+		.addListener((o,oldVentaSelected,newVentaSelected)->{
+			if(newVentaSelected != null) {
+				cargarDetallesVenta(newVentaSelected);
+			}else {
 				detalles.clear();
+			}
 		});
 		
-		tablaDetalles.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-		colProducto.setCellValueFactory(new PropertyValueFactory<>("nombreProducto"));
-		colMarca.setCellValueFactory(new PropertyValueFactory<>("marcaProducto"));
-		colPresentacion.setCellValueFactory(new PropertyValueFactory<>("presentacionProducto"));
-		colCosto.setCellValueFactory(new PropertyValueFactory<>("costo"));
-		colPrecio.setCellValueFactory(new PropertyValueFactory<>("precio"));
-		colCantidad.setCellValueFactory(new PropertyValueFactory<>("cantidad"));
+		tablaDetalles.getSelectionModel()
+			.setSelectionMode(SelectionMode.SINGLE);
+		colProducto.setCellValueFactory(
+				new PropertyValueFactory<>("nombreProducto"));
+		colMarca.setCellValueFactory(
+				new PropertyValueFactory<>("marcaProducto"));
+		colPresentacion.setCellValueFactory(
+				new PropertyValueFactory<>("presentacionProducto"));
+		colCosto.setCellValueFactory(
+				new PropertyValueFactory<>("costo"));
+		colPrecio.setCellValueFactory(
+				new PropertyValueFactory<>("precio"));
+		colCantidad.setCellValueFactory(
+				new PropertyValueFactory<>("cantidad"));
 		
 		pickerFecha.setValue(LocalDate.now());
 		
-		checkFiltrar.selectedProperty().addListener((ob,oldValue,newValue)->{
+		checkFiltrar.selectedProperty().addListener((o,oldValue,newValue)->{
 			pickerFecha.setDisable(!newValue);
 			if(newValue) {
 				cargarVentas(pickerFecha.getValue());
@@ -172,7 +162,7 @@ public class VentasController {
 				cargarVentas(null);
 		});
 		
-		pickerFecha.valueProperty().addListener((ob,oldValue,newValue)->{
+		pickerFecha.valueProperty().addListener((o,oldValue,newValue)->{
 			cargarVentas(newValue);
 		});
 		
@@ -190,8 +180,6 @@ public class VentasController {
 		}catch(IOException e) {
 			e.printStackTrace();
 		}
-		
-		boxVentas.getChildren().remove(boxClienteSucursal);
 		
 		itemNuevaVenta.setGraphic(Icono.add16());
 		itemDeseleccionarVenta.setGraphic(Icono.remove16());

@@ -101,7 +101,7 @@
                         <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
                      </padding>
                   </VBox>
-                  <VBox fx:id="boxExistencias" minWidth="100.0" spacing="4.0">
+                  <VBox minWidth="100.0" spacing="4.0">
                      <children>
                         <Label text="Existencias" />
                         <TableView fx:id="tablaExistencias" VBox.vgrow="ALWAYS">
@@ -122,14 +122,6 @@
                               </ContextMenu>
                            </contextMenu>
                         </TableView>
-                        <HBox fx:id="boxNombreSucursal" alignment="CENTER_LEFT">
-                           <children>
-                              <Label fx:id="labelNombreSucursal" text="Sucursal" />
-                           </children>
-                           <VBox.margin>
-                              <Insets />
-                           </VBox.margin>
-                        </HBox>
                      </children>
                      <padding>
                         <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />

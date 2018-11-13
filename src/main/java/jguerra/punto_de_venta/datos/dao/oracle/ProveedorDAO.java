@@ -14,14 +14,18 @@ import jguerra.punto_de_venta.datos.modelo.Proveedor;
 
 public class ProveedorDAO {
 	
-	public static final String SELECT = "SELECT nombre_proveedor,telefono_proveedor FROM proveedores"
-			+ " WHERE id_proveedor = ?";
-	public static final String SELECT_ALL = "SELECT id_proveedor,nombre_proveedor,telefono_proveedor"
+	public static final String SELECT = "SELECT nombre_proveedor,"
+			+ "telefono_proveedor FROM proveedores WHERE id_proveedor = ?";
+	public static final String SELECT_ALL = "SELECT id_proveedor,"
+			+ " nombre_proveedor,telefono_proveedor"
 			+ " FROM proveedores ORDER BY nombre_proveedor";
-	public static final String INSERT = "INSERT INTO proveedores(id_proveedor,nombre_proveedor,"
-			+ "telefono_proveedor) VALUES(?,?,?)";
-	public static final String DELETE = "DELETE FROM proveedores WHERE id_proveedor = ?";
-	public static final String UPDATE = "UPDATE proveedores SET nombre_proveedor = ?,telefono_proveedor = ?"
+	public static final String INSERT = "INSERT INTO proveedores("
+			+ "id_proveedor,nombre_proveedor,telefono_proveedor)"
+			+ " VALUES(?,?,?)";
+	public static final String DELETE = "DELETE FROM proveedores "
+			+ "  id_proveedor = ?";
+	public static final String UPDATE = "UPDATE proveedores"
+			+ " SET nombre_proveedor = ?,telefono_proveedor = ?"
 			+ " WHERE id_proveedor = ?";
 	
 	private Connection conexion;
@@ -38,7 +42,8 @@ public class ProveedorDAO {
 			ResultSet rs = st.executeQuery();
 			if(rs.next())
 				proveedorOpt = Optional.of(new Proveedor(idProveedor,
-						rs.getString("nombre_proveedor"),rs.getString("telefono_proveedor")));
+						rs.getString("nombre_proveedor"),
+						rs.getString("telefono_proveedor")));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -51,7 +56,8 @@ public class ProveedorDAO {
 			ResultSet rs = st.executeQuery(SELECT_ALL);
 			while(rs.next())
 				proveedores.add(new Proveedor(rs.getInt("id_proveedor"),
-						rs.getString("nombre_proveedor"),rs.getString("telefono_proveedor")));
+						rs.getString("nombre_proveedor"),
+						rs.getString("telefono_proveedor")));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

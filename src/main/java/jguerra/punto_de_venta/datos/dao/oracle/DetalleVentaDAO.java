@@ -11,8 +11,10 @@ import jguerra.punto_de_venta.datos.modelo.DetalleVenta;
 
 public class DetalleVentaDAO {
 	
-	public static final String SELECT_ALL_BY_VENTA = "SELECT nombre_producto,marca_producto,"
-			+ "presentacion_producto,costo,precio,cantidad FROM detalle_venta WHERE numero_venta = ?";
+	public static final String SELECT_ALL_BY_VENTA = 
+			"SELECT nombre_producto,marca_producto,presentacion_producto,"
+			+ "costo,precio,cantidad FROM detalle_venta"
+			+ " WHERE numero_venta = ?";
 	
 	private Connection conexion;
 	
@@ -23,13 +25,17 @@ public class DetalleVentaDAO {
 	
 	public List<DetalleVenta> selectAllByVenta(final int numeroVenta){
 		List<DetalleVenta> items = new LinkedList<>();
-		try(PreparedStatement st = conexion.prepareStatement(SELECT_ALL_BY_VENTA)){
+		try(PreparedStatement st = 
+				conexion.prepareStatement(SELECT_ALL_BY_VENTA)){
 			st.setInt(1, numeroVenta);
 			ResultSet rs = st.executeQuery();
 			while(rs.next())
-				items.add(new DetalleVenta(numeroVenta,rs.getString("nombre_producto"),
-						rs.getString("marca_producto"),rs.getString("presentacion_producto"),
-						rs.getBigDecimal("costo"),rs.getBigDecimal("precio"),rs.getInt("cantidad")));
+				items.add(new DetalleVenta(numeroVenta,
+						rs.getString("nombre_producto"),
+						rs.getString("marca_producto"),
+						rs.getString("presentacion_producto"),
+						rs.getBigDecimal("costo"),
+						rs.getBigDecimal("precio"),rs.getInt("cantidad")));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

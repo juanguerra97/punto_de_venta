@@ -14,25 +14,33 @@ import jguerra.punto_de_venta.datos.modelo.Producto;
 
 public class ProductoDAO {
 	
-	public static final String SELECT_BY_ID = "SELECT nombre_producto,marca_producto FROM productos"
-			+ " WHERE id_producto = ?";
-	public static final String SELECT_BY_NOMBRE_MARCA = "SELECT id_producto"
-			+ " FROM productos WHERE nombre_producto = ? AND marca_producto = ? ORDER BY id_producto";
-	public static final String SELECT_ALL = "SELECT id_producto,nombre_producto,marca_producto FROM"
-			+ " productos ORDER BY id_producto,nombre_producto";
-	public static final String SELECT_ALL_BY_NOMBRE = "SELECT id_producto,marca_producto"
-			+ " FROM productos WHERE nombre_producto = ? ORDER BY id_producto";
-	public static final String SELECT_ALL_BY_MARCA = "SELECT id_producto,nombre_producto,marca_producto"
-			+ " FROM productos WHERE marca_producto = ? ORDER BY id_producto,nombre_producto";
-	public static final String SELECT_ALL_MARCAS = "SELECT DISTINCT(marca_producto)"
-			+ " AS nombre_marca FROM productos ORDER BY nombre_marca";
-	public static final String SELECT_MARCAS_REGEX = "SELECT DISTINCT(marca_producto)"
-			+ " AS nombre_marca FROM productos WHERE REGEXP_LIKE(marca_producto,?)"
+	public static final String SELECT_BY_ID = "SELECT nombre_producto,"
+			+ " marca_producto FROM productos WHERE id_producto = ?";
+	public static final String SELECT_BY_NOMBRE_MARCA = 
+			"SELECT id_producto FROM productos WHERE nombre_producto = ?"
+			+ " AND marca_producto = ? ORDER BY id_producto";
+	public static final String SELECT_ALL = "SELECT id_producto,"
+			+ "nombre_producto,marca_producto FROM productos"
+			+ " ORDER BY id_producto,nombre_producto";
+	public static final String SELECT_ALL_BY_NOMBRE = "SELECT id_producto,"
+			+ " marca_producto FROM productos WHERE nombre_producto = ?"
+			+ " ORDER BY id_producto";
+	public static final String SELECT_ALL_BY_MARCA = "SELECT id_producto,"
+			+ " nombre_producto,marca_producto FROM productos"
+			+ " WHERE marca_producto = ? ORDER BY id_producto,nombre_producto";
+	public static final String SELECT_ALL_MARCAS = 
+			"SELECT DISTINCT(marca_producto) AS nombre_marca"
+			+ " FROM productos ORDER BY nombre_marca";
+	public static final String SELECT_MARCAS_REGEX = 
+			"SELECT DISTINCT(marca_producto) AS nombre_marca"
+			+ " FROM productos WHERE REGEXP_LIKE(marca_producto,?)"
 			+ " ORDER BY nombre_marca";
-	public static final String INSERT = "INSERT INTO productos(id_producto,nombre_producto,"
-			+ "marca_producto) VALUES(?,?,?)";
-	public static final String DELETE = "DELETE FROM productos WHERE id_producto = ?";
-	public static final String UPDATE = "UPDATE productos SET nombre_producto = ?,marca_producto=?"
+	public static final String INSERT = "INSERT INTO productos("
+			+ " id_producto,nombre_producto,marca_producto) VALUES(?,?,?)";
+	public static final String DELETE = "DELETE FROM productos"
+			+ " WHERE id_producto = ?";
+	public static final String UPDATE = "UPDATE productos"
+			+ " SET nombre_producto = ?,marca_producto = ?"
 			+ " WHERE id_producto = ?";
 	
 	private Connection conexion;
@@ -49,23 +57,27 @@ public class ProductoDAO {
 			ResultSet rs = st.executeQuery();
 			if(rs.next())
 				productoOpt = Optional.of(new Producto(idProducto,
-						rs.getString("nombre_producto"),rs.getString("marca_producto")));
+						rs.getString("nombre_producto"),
+						rs.getString("marca_producto")));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return productoOpt;
 	}
 	
-	public Optional<Producto> selectByNombreMarca(final String nombre, final String marca){
+	public Optional<Producto> selectByNombreMarca(final String nombre, 
+			final String marca){
 		assert nombre != null;
 		assert marca != null;
 		Optional<Producto> productoOpt = Optional.empty();
-		try(PreparedStatement st = conexion.prepareStatement(SELECT_BY_NOMBRE_MARCA)){
+		try(PreparedStatement st = 
+				conexion.prepareStatement(SELECT_BY_NOMBRE_MARCA)){
 			st.setString(1, nombre);
 			st.setString(2, marca);
 			ResultSet rs = st.executeQuery();
 			if(rs.next())
-				productoOpt = Optional.of(new Producto(rs.getInt("id_producto"),
+				productoOpt = Optional.of(new Producto(
+						rs.getInt("id_producto"),
 						nombre,marca));
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -79,7 +91,8 @@ public class ProductoDAO {
 			ResultSet rs = st.executeQuery(SELECT_ALL);
 			while(rs.next())
 				productos.add(new Producto(rs.getInt("id_producto"),
-						rs.getString("nombre_producto"),rs.getString("marca_producto")));
+						rs.getString("nombre_producto"),
+						rs.getString("marca_producto")));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -89,7 +102,8 @@ public class ProductoDAO {
 	public List<Producto> selectAllByNombre(final String nombre){
 		assert nombre != null;
 		List<Producto> productos = new LinkedList<>();
-		try(PreparedStatement st = conexion.prepareStatement(SELECT_ALL_BY_NOMBRE)){
+		try(PreparedStatement st = 
+				conexion.prepareStatement(SELECT_ALL_BY_NOMBRE)){
 			st.setString(1, nombre);
 			ResultSet rs = st.executeQuery();
 			while(rs.next())
@@ -104,12 +118,14 @@ public class ProductoDAO {
 	public List<Producto> selectAllByMarca(final String marca){
 		assert marca != null;
 		List<Producto> productos = new LinkedList<>();
-		try(PreparedStatement st = conexion.prepareStatement(SELECT_ALL_BY_MARCA)){
+		try(PreparedStatement st = 
+				conexion.prepareStatement(SELECT_ALL_BY_MARCA)){
 			st.setString(1, marca);
 			ResultSet rs = st.executeQuery();
 			while(rs.next())
 				productos.add(new Producto(rs.getInt("id_producto"),
-						rs.getString("nombre_producto"),rs.getString("marca_producto")));
+						rs.getString("nombre_producto"),
+						rs.getString("marca_producto")));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -133,7 +149,8 @@ public class ProductoDAO {
 		List<String> marcas = new LinkedList<>();
 		if(max <= 0)
 			return marcas;
-		try(PreparedStatement st = conexion.prepareStatement(SELECT_MARCAS_REGEX)){
+		try(PreparedStatement st = 
+				conexion.prepareStatement(SELECT_MARCAS_REGEX)){
 			st.setString(1, regex);
 			ResultSet rs = st.executeQuery();
 			for(int i = 0; rs.next() && i < max; ++i)

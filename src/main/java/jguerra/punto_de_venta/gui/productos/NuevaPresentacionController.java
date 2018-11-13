@@ -95,22 +95,22 @@ public class NuevaPresentacionController {
     	Fields.setupClearButtonField(fieldCosto);
     	Fields.setupClearButtonField(fieldPrecio);
     	
-    	fieldNombre.textProperty().addListener((observable,oldText,newText)->{
+    	fieldNombre.textProperty().addListener((o,oldText,newText)->{
     		nombreInvalido = newText.trim().isEmpty();
-    		btnGuardar.setDisable(nombreInvalido || costoInvalido || precioInvalido ||
-    				valoresCostoPrecioInvalidos());
+    		btnGuardar.setDisable(nombreInvalido || costoInvalido 
+    				|| precioInvalido || valoresCostoPrecioInvalidos());
     	});
     	
-    	fieldCosto.textProperty().addListener((observable,oldText,newText)->{
+    	fieldCosto.textProperty().addListener((o,oldText,newText)->{
     		costoInvalido = !Validacion.validarMoneda(newText.trim());
-    		btnGuardar.setDisable(costoInvalido || nombreInvalido || precioInvalido ||
-    				valoresCostoPrecioInvalidos());
+    		btnGuardar.setDisable(costoInvalido || nombreInvalido 
+    				|| precioInvalido || valoresCostoPrecioInvalidos());
     	});
     	
-    	fieldPrecio.textProperty().addListener((observable,oldText,newText)->{
+    	fieldPrecio.textProperty().addListener((o,oldText,newText)->{
     		precioInvalido = !Validacion.validarMoneda(newText.trim());
-    		btnGuardar.setDisable(precioInvalido || nombreInvalido || costoInvalido ||
-    				valoresCostoPrecioInvalidos());
+    		btnGuardar.setDisable(precioInvalido || nombreInvalido 
+    				|| costoInvalido || valoresCostoPrecioInvalidos());
     	});
     	
     }
@@ -120,7 +120,7 @@ public class NuevaPresentacionController {
     	if(producto == null)
     		return;
     	manager.presentacion().ifPresent(dao -> {
-    		presentacion = new Presentacion(producto.getId(), 
+    		presentacion = new Presentacion(producto, 
     				fieldNombre.getText().trim().toUpperCase(), 
     				new BigDecimal(fieldPrecio.getText().trim()), 
     				new BigDecimal(fieldCosto.getText().trim()));
@@ -130,7 +130,9 @@ public class NuevaPresentacionController {
 				btnGuardar.getScene().getWindow().hide();
 			} catch (SQLException e) {
 				presentacion = null;
-				Main.alertError("ERROR", "Ocurrió un error al guardar la presentación", e.getMessage());
+				Main.alertError("ERROR", 
+						"Ocurrió un error al guardar la presentación", 
+						e.getMessage());
 				fieldNombre.selectAll();
 				fieldNombre.requestFocus();
 				e.printStackTrace();

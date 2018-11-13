@@ -161,14 +161,15 @@ public class NuevaCompraController {
     private void cargarPresentaciones(final Producto producto) {
     	manager.presentacion().ifPresent(dao -> {
     		listaPresentaciones.getItems()
-    			.setAll(dao.selectAllByProducto(producto.getId()));
+    			.setAll(dao.selectAllByProducto(producto));
     	});
     }
     
     private void cargarSucursales(final Presentacion presentacion) {
     	manager.presentacion().ifPresent(dao -> {
     		listaSucursales.getItems()
-    			.setAll(dao.selectSucursalesPresentacion(presentacion.getId()));
+    			.setAll(dao.selectSucursalesPresentacion(
+    					presentacion.getId()));
     	});
     }
 
@@ -180,40 +181,52 @@ public class NuevaCompraController {
     	detalles = tablaDetalles.getItems();
     	total = BigDecimal.ZERO;
     	
-    	tablaDetalles.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-    	colProducto.setCellValueFactory(new PropertyValueFactory<>("nombreProducto"));
-    	colMarca.setCellValueFactory(new PropertyValueFactory<>("marcaProducto"));
-    	colPresentacion.setCellValueFactory(new PropertyValueFactory<>("presentacionProducto"));
-    	colSucursal.setCellValueFactory(new PropertyValueFactory<>("nombreSucursal"));
-    	colCosto.setCellValueFactory(new PropertyValueFactory<>("costo"));
-    	colCantidad.setCellValueFactory(new PropertyValueFactory<>("cantidad"));
+    	tablaDetalles.getSelectionModel()
+    		.setSelectionMode(SelectionMode.SINGLE);
+    	colProducto.setCellValueFactory(
+    			new PropertyValueFactory<>("nombreProducto"));
+    	colMarca.setCellValueFactory(
+    			new PropertyValueFactory<>("marcaProducto"));
+    	colPresentacion.setCellValueFactory(
+    			new PropertyValueFactory<>("presentacionProducto"));
+    	colSucursal.setCellValueFactory(
+    			new PropertyValueFactory<>("nombreSucursal"));
+    	colCosto.setCellValueFactory(
+    			new PropertyValueFactory<>("costo"));
+    	colCantidad.setCellValueFactory(
+    			new PropertyValueFactory<>("cantidad"));
     	
-    	tablaProductos.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+    	tablaProductos.getSelectionModel()
+    		.setSelectionMode(SelectionMode.SINGLE);
     	colId.setCellValueFactory(new PropertyValueFactory<>("id"));
-    	colNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
-    	colMarcaProducto.setCellValueFactory(new PropertyValueFactory<>("marca"));
-    	tablaProductos.getSelectionModel().selectedItemProperty().addListener(
-    			(ob,oldSelection,newSelection)->{
-    		if(newSelection == null) {
+    	colNombre.setCellValueFactory(
+    			new PropertyValueFactory<>("nombre"));
+    	colMarcaProducto.setCellValueFactory(
+    			new PropertyValueFactory<>("marca"));
+    	tablaProductos.getSelectionModel().selectedItemProperty()
+    	.addListener((o,oldProdSelected,newProdSelected)->{
+    		if(newProdSelected == null) {
     			listaPresentaciones.getItems().clear();
     		}else {
-    			cargarPresentaciones(newSelection);
+    			cargarPresentaciones(newProdSelected);
     		}
     	});
     	
-    	listaPresentaciones.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+    	listaPresentaciones.getSelectionModel()
+    		.setSelectionMode(SelectionMode.SINGLE);
     	listaPresentaciones.getSelectionModel().selectedItemProperty()
-    		.addListener((ob,oldSelection,newSelection)->{
-    		if(newSelection == null) {
+    	.addListener((o,oldPresSelected,newPresSelected)->{
+    		if(newPresSelected == null) {
     			listaSucursales.getItems().clear();
     		}else {
-    			cargarSucursales(newSelection);
+    			cargarSucursales(newPresSelected);
     		}
     	});
     	
-    	listaSucursales.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+    	listaSucursales.getSelectionModel()
+    		.setSelectionMode(SelectionMode.SINGLE);
     	listaSucursales.getSelectionModel().selectedItemProperty()
-    		.addListener((ob,oldSelection,newSelection)->{
+    	.addListener((ob,oldSelection,newSelection)->{
     		boolean sinSeleccion = newSelection == null;
     		spinnerCantidad.setDisable(sinSeleccion);
     		btnAgregar.setDisable(sinSeleccion);
@@ -222,17 +235,20 @@ public class NuevaCompraController {
     	
     	choiceProveedor.getSelectionModel().selectedItemProperty()
     		.addListener((ob,oldSeleccion,newSeleccion)->{
-    		btnListo.setDisable(newSeleccion == null || detalles.size() <= 0);
+    		btnListo.setDisable(newSeleccion == null 
+    				|| detalles.size() <= 0);
     	});
     	
-    	spinnerValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 1000000, 1, 1);
+    	spinnerValueFactory = new SpinnerValueFactory
+    			.IntegerSpinnerValueFactory(1, 1000000, 1, 1);
     	spinnerCantidad.setValueFactory(spinnerValueFactory);
     	
     	Fields.setupClearButtonField(fieldFiltroProductos);
     	
     	fieldFiltroProductos.setOnAction(e -> onFiltrarProductos(e));
     	
-    	fieldFiltroProductos.textProperty().addListener((ob,oldText,newText)->{
+    	fieldFiltroProductos.textProperty()
+    	.addListener((ob,oldText,newText)->{
     		btnFiltrarProductos.setDisable(newText.trim().length() < 3);
     		if(newText.trim().isEmpty()) {
     			cargarProductos();
@@ -250,15 +266,15 @@ public class NuevaCompraController {
     @FXML
     private void onListo(ActionEvent event) {
     	manager.compra().ifPresent(dao -> {
-    		compra = new Compra(
-    				choiceProveedor.getSelectionModel().getSelectedItem().getId(), 
+    		compra = new Compra(choiceProveedor.getValue(), 
     				pickerFecha.getValue(), total);
     		try {
 				int numero = dao.insert(compra, detalles);
 				compra.setNumero(numero);
 				manager.existencia().ifPresent(daoExistencia -> {
 					detalles.forEach(detalle -> {
-						 daoExistencia.selectByDetalle(detalle).ifPresent(existencia -> {
+						 daoExistencia.selectByDetalle(detalle)
+						 .ifPresent(existencia -> {
 							 existencia.setCantidad(existencia.getCantidad() + detalle.getCantidad());
 							 daoExistencia.update(existencia);
 						 });
@@ -267,7 +283,9 @@ public class NuevaCompraController {
 				btnListo.getScene().getWindow().hide();
 			} catch (SQLException e) {
 				compra = null;
-				Main.alertError("ERROR", "Ocurrió un error al guardar la compra", e.getMessage());
+				Main.alertError("ERROR", 
+						"Ocurrió un error al guardar la compra", 
+						e.getMessage());
 				e.printStackTrace();
 			}
     	});
@@ -281,22 +299,31 @@ public class NuevaCompraController {
     @FXML
     private void onAgregar(ActionEvent event) {
     	
-    	final Producto prod = tablaProductos.getSelectionModel().getSelectedItem();
-    	final Presentacion pres = listaPresentaciones.getSelectionModel().getSelectedItem();
-    	final Sucursal suc = listaSucursales.getSelectionModel().getSelectedItem();
+    	final Producto prod = tablaProductos.getSelectionModel()
+    				.getSelectedItem();
+    	final Presentacion pres = listaPresentaciones
+    				.getSelectionModel().getSelectedItem();
+    	final Sucursal suc = listaSucursales.getSelectionModel()
+    				.getSelectedItem();
     	
-    	final DetalleCompra detalle = new DetalleCompra(prod.getNombre(), prod.getMarca(), pres.getNombre(), suc.getNombre(), pres.getCosto(), spinnerCantidad.getValue());
-    	total = total.add(detalle.getCosto().multiply(new BigDecimal(detalle.getCantidad())));
+    	final DetalleCompra detalle = new DetalleCompra(prod.getNombre(),
+    			prod.getMarca(), pres.getNombre(), 
+    			suc.getNombre(), pres.getCosto(), 
+    			spinnerCantidad.getValue());
+    	total = total.add(detalle.getCosto().multiply(
+    			new BigDecimal(detalle.getCantidad())));
     	
     	int indice = detalles.indexOf(detalle);
     	
     	if(indice >= 0) {
-    		detalle.setCantidad(detalle.getCantidad() + detalles.get(indice).getCantidad());
+    		detalle.setCantidad(detalle.getCantidad() 
+    				+ detalles.get(indice).getCantidad());
     		detalles.set(indice, detalle);
     	} else {
     		detalles.add(detalle);
     		btnListo.setDisable(detalles.size() <= 0 || 
-        			choiceProveedor.getSelectionModel().getSelectedItem() == null);
+        			choiceProveedor.getSelectionModel()
+        			.getSelectedItem() == null);
     	}
     	labelTotal.setText(total.toPlainString());
     	
@@ -320,7 +347,8 @@ public class NuevaCompraController {
     	tablaDetalles.getSelectionModel().clearSelection();
     	detalles.remove(detalle);
     	btnListo.setDisable(detalles.size() <= 0 || 
-    			choiceProveedor.getSelectionModel().getSelectedItem() == null);
+    			choiceProveedor.getSelectionModel()
+    			.getSelectedItem() == null);
     }
     
     @FXML
@@ -333,7 +361,8 @@ public class NuevaCompraController {
     	if(btnFiltrarProductos.isDisable())
     		return;
     	tablaProductos.getItems().setAll(
-    			FiltradorProductos.filtrar(fieldFiltroProductos.getText().trim()));
+    			FiltradorProductos.filtrar(fieldFiltroProductos
+    					.getText().trim()));
     }
     
     @FXML

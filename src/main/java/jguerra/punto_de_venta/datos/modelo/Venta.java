@@ -3,29 +3,28 @@ package jguerra.punto_de_venta.datos.modelo;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import jguerra.punto_de_venta.datos.validacion.Validacion;
-
 public final class Venta {
 	
 	private int numero;
-	private String nitCliente;
-	private int idSucursal;
+	private Cliente cliente;
+	private Sucursal sucursal;
 	private LocalDate fecha;
 	private BigDecimal total;
 	
-	public Venta(final int numero, final String nitCliente, final int idSucursal, 
-			final LocalDate fecha, final BigDecimal total) {
+	public Venta(final int numero, final Cliente cliente, 
+			final Sucursal sucursal, final LocalDate fecha, 
+			final BigDecimal total) {
 		setNumero(numero);
-		setNitCliente(nitCliente);
-		setIdSucursal(idSucursal);
+		setCliente(cliente);
+		setSucursal(sucursal);
 		setFecha(fecha);
 		setTotal(total);
 	}
 
 	
-	public Venta(final String nitCliente, final int idSucursal, 
+	public Venta(final Cliente cliente, final Sucursal sucursal, 
 			final LocalDate fecha, final BigDecimal total) {
-		this(0,nitCliente,idSucursal,fecha,total);
+		this(0,cliente,sucursal,fecha,total);
 	}
 	
 	public int getNumero() {
@@ -34,31 +33,27 @@ public final class Venta {
 	
 	public void setNumero(final int numero) {
 		if(numero < 0)
-			throw new IllegalArgumentException("El número de la venta no puede ser negativo");
+			throw new IllegalArgumentException(
+					"El número de la venta no puede ser negativo");
 		this.numero = numero;
 	}
 	
-	public String getNitCliente() {
-		return nitCliente;
+	public Cliente getCliente() {
+		return cliente;
 	}
 	
-	public void setNitCliente(final String nitCliente) {
-		assert nitCliente != null;
-		if(nitCliente.isEmpty())
-			throw new IllegalArgumentException("El NIT del cliente no puede quedar vacío");
-		if(!Validacion.validarNit(nitCliente))
-			throw new IllegalArgumentException("El NIT del cliente es inválido");
-		this.nitCliente = nitCliente;
+	public void setCliente(final Cliente cliente) {
+		assert cliente != null;
+		this.cliente = cliente;
 	}
 	
-	public int getIdSucursal() {
-		return idSucursal;
+	public Sucursal getSucursal() {
+		return sucursal;
 	}
 	
-	public void setIdSucursal(final int idSucursal) {
-		if(idSucursal < 0)
-			throw new IllegalArgumentException("El ID de la sucursal no puede ser negativo");
-		this.idSucursal = idSucursal;
+	public void setSucursal(final Sucursal sucursal) {
+		assert sucursal != null;
+		this.sucursal = sucursal;
 	}
 	
 	public LocalDate getFecha() {
@@ -77,7 +72,8 @@ public final class Venta {
 	public void setTotal(final BigDecimal total) {
 		assert total != null;
 		if(total.compareTo(BigDecimal.ZERO) < 0)
-			throw new IllegalArgumentException("El total no puede ser negativo");
+			throw new IllegalArgumentException(
+					"El total no puede ser negativo");
 		this.total = total;
 	}
 

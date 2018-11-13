@@ -98,8 +98,8 @@ public class NuevaExistenciaController {
     		return;
     	manager.existencia().ifPresent(dao -> {
     		
-    		existencia = new Existencia(presentacion.getId(), 
-    				choiceBoxSucursal.getSelectionModel().getSelectedItem().getId(), 
+    		existencia = new Existencia(presentacion, 
+    				choiceBoxSucursal.getValue(), 
     				Integer.parseInt(fieldCantidad.getText().trim()));
     		
     		try {

@@ -5,23 +5,24 @@ import java.math.BigDecimal;
 public final class Presentacion {
 	
 	private int id;
-	private int idProducto;
+	private Producto producto;
 	private String nombre;
 	private BigDecimal precio;
 	private BigDecimal costo;
 	
-	public Presentacion(final int id, final int idProducto, final String nombre, 
-			final BigDecimal precio, final BigDecimal costo) {
+	public Presentacion(final int id, final Producto producto, 
+			final String nombre, final BigDecimal precio, 
+			final BigDecimal costo) {
 		setId(id);
-		setIdProducto(idProducto);
+		setProducto(producto);
 		setNombre(nombre);
 		setPrecio(precio);
 		setCosto(costo);
 	}
 	
-	public Presentacion(final int idProducto, final String nombre, 
+	public Presentacion(final Producto producto, final String nombre, 
 			final BigDecimal precio, final BigDecimal costo) {
-		this(0,idProducto,nombre,precio,costo);
+		this(0,producto,nombre,precio,costo);
 	}
 
 	public int getId() {
@@ -34,14 +35,13 @@ public final class Presentacion {
 		this.id = id;
 	}
 	
-	public int getIdProducto() {
-		return idProducto;
+	public Producto getProducto() {
+		return producto;
 	}
 	
-	public void setIdProducto(final int idProducto) {
-		if(idProducto < 0)
-			throw new IllegalArgumentException("El ID del producto no puede ser negativo");
-		this.idProducto = idProducto;
+	public void setProducto(final Producto producto) {
+		assert producto != null;
+		this.producto = producto;
 	}
 	
 	public String getNombre() {
@@ -95,7 +95,7 @@ public final class Presentacion {
 			return false;
 		Presentacion other = (Presentacion) obj;
 		if (id != other.id)
-			return nombre.equalsIgnoreCase(other.nombre) && idProducto == other.idProducto;
+			return nombre.equalsIgnoreCase(other.nombre) && producto == other.producto;
 		return true;
 	}
 

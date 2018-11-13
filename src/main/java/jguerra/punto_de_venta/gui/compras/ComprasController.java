@@ -11,27 +11,22 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.DatePicker;
-import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import jguerra.punto_de_venta.datos.dao.oracle.DAOManager;
 import jguerra.punto_de_venta.datos.modelo.Compra;
 import jguerra.punto_de_venta.datos.modelo.DetalleCompra;
+import jguerra.punto_de_venta.datos.modelo.Proveedor;
 import jguerra.punto_de_venta.gui.Icono;
 import jguerra.punto_de_venta.gui.Main;
 
 public class ComprasController {
-	
-	@FXML
-    private VBox boxCompras;
 	
 	@FXML
 	private CheckBox checkFiltrar;
@@ -46,7 +41,7 @@ public class ComprasController {
 	private TableColumn<Compra, Integer> colNumero;
 
 	@FXML
-	private TableColumn<Compra, Integer> colProveedor;
+	private TableColumn<Compra, Proveedor> colProveedor;
 
 	@FXML
 	private TableColumn<Compra, LocalDate> colFecha;
@@ -59,12 +54,6 @@ public class ComprasController {
 
 	@FXML
 	private MenuItem itemDeseleccionarCompra;
-	
-	@FXML
-	private HBox boxNombreProveedor;
-
-	@FXML
-	private Label labelNombreProveedor;
 
 	@FXML
 	private TableView<DetalleCompra> tablaDetalles;
@@ -100,10 +89,11 @@ public class ComprasController {
 	
 	private void cargarCompras(final LocalDate fecha) {
 		manager.compra().ifPresent(dao -> {
-			if(fecha == null)
+			if(fecha == null) {
 				compras.setAll(dao.selectAll());
-			else
+			}else {
 				compras.setAll(dao.selectAllByFecha(fecha));
+			}
 		});
 	}
 	
@@ -122,53 +112,62 @@ public class ComprasController {
 		compras = tablaCompras.getItems();
 		detalles = tablaDetalles.getItems();
 		
-		tablaCompras.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-		colNumero.setCellValueFactory(new PropertyValueFactory<>("numero"));
-		colProveedor.setCellValueFactory(new PropertyValueFactory<>("idProveedor"));
-		colFecha.setCellValueFactory(new PropertyValueFactory<>("fecha"));
-		colTotal.setCellValueFactory(new PropertyValueFactory<>("total"));
-		tablaCompras.getSelectionModel().selectedItemProperty().addListener(
-				(ob,oldSelection,newSelection)->{
-			boxCompras.getChildren().remove(boxNombreProveedor);
+		tablaCompras.getSelectionModel()
+			.setSelectionMode(SelectionMode.SINGLE);
+		colNumero.setCellValueFactory(
+				new PropertyValueFactory<>("numero"));
+		colProveedor.setCellValueFactory(
+				new PropertyValueFactory<>("proveedor"));
+		colFecha.setCellValueFactory(
+				new PropertyValueFactory<>("fecha"));
+		colTotal.setCellValueFactory(
+				new PropertyValueFactory<>("total"));
+		tablaCompras.getSelectionModel().selectedItemProperty()
+		.addListener((o,oldSelection,newSelection)->{
 			if(newSelection != null) {
 				cargarDetallesCompra(newSelection);
-				manager.proveedor().ifPresent(dao -> {
-					dao.select(newSelection.getIdProveedor())
-						.ifPresent(prov -> {
-						labelNombreProveedor.setText(prov.getNombre());
-						boxCompras.getChildren().add(boxNombreProveedor);
-					});
-				});
-			}else
+			}else {
 				detalles.clear();
+			}
 		});
 		
-		tablaDetalles.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-		colProducto.setCellValueFactory(new PropertyValueFactory<>("nombreProducto"));
-		colMarca.setCellValueFactory(new PropertyValueFactory<>("marcaProducto"));
-		colPresentacion.setCellValueFactory(new PropertyValueFactory<>("presentacionProducto"));
-		colSucursal.setCellValueFactory(new PropertyValueFactory<>("nombreSucursal"));
-		colCosto.setCellValueFactory(new PropertyValueFactory<>("costo"));
-		colCantidad.setCellValueFactory(new PropertyValueFactory<>("cantidad"));
+		tablaDetalles.getSelectionModel()
+			.setSelectionMode(SelectionMode.SINGLE);
+		colProducto.setCellValueFactory(
+				new PropertyValueFactory<>("nombreProducto"));
+		colMarca.setCellValueFactory(
+				new PropertyValueFactory<>("marcaProducto"));
+		colPresentacion.setCellValueFactory(
+				new PropertyValueFactory<>("presentacionProducto"));
+		colSucursal.setCellValueFactory(
+				new PropertyValueFactory<>("nombreSucursal"));
+		colCosto.setCellValueFactory(
+				new PropertyValueFactory<>("costo"));
+		colCantidad.setCellValueFactory(
+				new PropertyValueFactory<>("cantidad"));
 		
 		pickerFecha.setValue(LocalDate.now());
 		
-		checkFiltrar.selectedProperty().addListener((ob,oldValue,newValue)->{
-			pickerFecha.setDisable(!newValue);
-			if(newValue) {
+		checkFiltrar.selectedProperty()
+		.addListener((o,oldFiltro,newFiltro)->{
+			pickerFecha.setDisable(!newFiltro);
+			if(newFiltro) {
 				cargarCompras(pickerFecha.getValue());
-			}else
+			}else {
 				cargarCompras(null);
+			}
 		});
 		
-		pickerFecha.valueProperty().addListener((ob,oldValue,newValue)->{
+		pickerFecha.valueProperty()
+		.addListener((ob,oldValue,newValue)->{
 			cargarCompras(newValue);
 		});
 		
 		try {
 			FXMLLoader loaderNuevaCompra = new FXMLLoader(getClass()
 					.getResource("/fxml/compras/NuevaCompra.fxml"));
-			Scene sceneNuevaCompra = new Scene(loaderNuevaCompra.load(),750,450);
+			Scene sceneNuevaCompra = new Scene(loaderNuevaCompra.load(),
+					750,450);
 			controllerNuevaCompra = loaderNuevaCompra.getController();
 			windowNuevaCompra = new Stage();
 			windowNuevaCompra.setScene(sceneNuevaCompra);
@@ -179,8 +178,6 @@ public class ComprasController {
 		}catch(IOException e) {
 			e.printStackTrace();
 		}
-		
-		boxCompras.getChildren().remove(boxNombreProveedor);
 		
 		itemNuevaCompra.setGraphic(Icono.add16());
 		itemDeseleccionarCompra.setGraphic(Icono.remove16());
@@ -193,7 +190,8 @@ public class ComprasController {
 	@FXML
 	private void onTablaComprasContextMenuShown(WindowEvent event) {
 		itemDeseleccionarCompra.setDisable(
-				tablaCompras.getSelectionModel().getSelectedItem() == null);
+				tablaCompras.getSelectionModel()
+				.getSelectedItem() == null);
 	}
 	
 	@FXML
@@ -218,7 +216,8 @@ public class ComprasController {
 	@FXML
 	private void onTablaDetallesContextMenuShown(WindowEvent event) {
 		itemDeseleccionarDetalle.setDisable(
-				tablaDetalles.getSelectionModel().getSelectedItem() == null);
+				tablaDetalles.getSelectionModel()
+				.getSelectedItem() == null);
 	}
 	
 	@FXML

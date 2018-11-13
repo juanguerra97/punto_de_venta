@@ -12,7 +12,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.CheckMenuItem;
-import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
@@ -20,8 +19,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -29,6 +26,7 @@ import jguerra.punto_de_venta.datos.dao.oracle.DAOManager;
 import jguerra.punto_de_venta.datos.modelo.Existencia;
 import jguerra.punto_de_venta.datos.modelo.Presentacion;
 import jguerra.punto_de_venta.datos.modelo.Producto;
+import jguerra.punto_de_venta.datos.modelo.Sucursal;
 import jguerra.punto_de_venta.gui.Icono;
 import jguerra.punto_de_venta.gui.Main;
 
@@ -89,19 +87,10 @@ public class ProductosController {
     private TableView<Existencia> tablaExistencias;
 
     @FXML
-    private TableColumn<Existencia, Integer> colSucursalExistencia;
+    private TableColumn<Existencia, Sucursal> colSucursalExistencia;
 
     @FXML
     private TableColumn<Existencia, Integer> colCantidadExistencia;
-    
-    @FXML
-    private VBox boxExistencias;
-    
-    @FXML
-    private HBox boxNombreSucursal;
-
-    @FXML
-    private Label labelNombreSucursal;
 
     @FXML
     private MenuItem itemNuevaExistencia;
@@ -167,14 +156,14 @@ public class ProductosController {
     private void cargarPresentaciones(final Producto producto) {
     	assert producto != null;
     	manager.presentacion().ifPresent(dao -> {
-    		presentaciones.setAll(dao.selectAllByProducto(producto.getId()));
+    		presentaciones.setAll(dao.selectAllByProducto(producto));
     	});
     }
     
     private void cargarExistencias(final Presentacion presentacion) {
     	assert presentacion != null;
     	manager.existencia().ifPresent(dao -> {
-    		existencias.setAll(dao.selectAllByPresentacion(presentacion.getId()));
+    		existencias.setAll(dao.selectAllByPresentacion(presentacion));
     	});
     }
     
@@ -300,7 +289,7 @@ public class ProductosController {
 		editorPresentacion = new EditorPresentacion(e -> {
 			final Presentacion pres = expanderColPresentacion.getValue();
 			final Presentacion actualizada = new Presentacion(pres.getId(), 
-					pres.getIdProducto(),
+					pres.getProducto(),
 					editorPresentacion.getNombre().trim().toUpperCase(),
 					new BigDecimal(editorPresentacion.getPrecio().trim()),
 					new BigDecimal(editorPresentacion.getCosto().trim()));
@@ -335,9 +324,9 @@ public class ProductosController {
 		tablaExistencias.getSelectionModel().setSelectionMode(
 				SelectionMode.SINGLE);
 		colSucursalExistencia.setCellValueFactory(
-				new PropertyValueFactory<Existencia,Integer>("idSucursal"));
+				new PropertyValueFactory<>("sucursal"));
 		colCantidadExistencia.setCellValueFactory(
-				new PropertyValueFactory<Existencia,Integer>("cantidad"));
+				new PropertyValueFactory<>("cantidad"));
 		
 		tablaProductos.getSelectionModel().selectedItemProperty()
 		.addListener((o,oldProdSelected,newProdSelected)->{
@@ -367,19 +356,6 @@ public class ProductosController {
 			}else {
 				existencias.clear();
 			}
-		});
-		
-		tablaExistencias.getSelectionModel().selectedItemProperty()
-		.addListener((o,oldExisSelected,newExisSelected)->{
-			boxExistencias.getChildren().remove(boxNombreSucursal);
-			if(newExisSelected != null)
-				manager.sucursal().ifPresent(dao -> {
-					dao.select(newExisSelected.getIdSucursal())
-					.ifPresent(suc -> {
-						labelNombreSucursal.setText(suc.getNombre());
-						boxExistencias.getChildren().add(boxNombreSucursal);
-					});
-				});
 		});
 		
 		checkItemFiltrar.selectedProperty()
@@ -439,8 +415,6 @@ public class ProductosController {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		boxExistencias.getChildren().remove(boxNombreSucursal);
 		
 		itemNuevoProducto.setGraphic(Icono.add16());
 		itemEliminarProducto.setGraphic(Icono.clear16());

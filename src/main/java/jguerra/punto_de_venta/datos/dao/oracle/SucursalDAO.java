@@ -52,7 +52,8 @@ public class SucursalDAO {
 		try(Statement st = conexion.createStatement()){
 			ResultSet rs = st.executeQuery(SELECT_ALL);
 			while(rs.next())
-				sucursales.add(new Sucursal(rs.getInt("id_sucursal"),rs.getString("nombre_sucursal")));
+				sucursales.add(new Sucursal(rs.getInt("id_sucursal"),
+						rs.getString("nombre_sucursal")));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

@@ -2,34 +2,33 @@ package jguerra.punto_de_venta.datos.modelo;
 
 public final class Existencia {
 	
-	private int idPresentacion;
-	private int idSucursal;
+	private Presentacion presentacion;
+	private Sucursal sucursal;
 	private int cantidad;
 	
-	public Existencia(final int idPresentacion, final int idSucursal, final int cantidad) {
-		setIdPresentacion(idPresentacion);
-		setIdSucursal(idSucursal);
+	public Existencia(final Presentacion presentacion, 
+			final Sucursal sucursal, final int cantidad) {
+		setPresentacion(presentacion);
+		setSucursal(sucursal);
 		setCantidad(cantidad);
 	}
 
-	public int getIdPresentacion() {
-		return idPresentacion;
+	public Presentacion getPresentacion() {
+		return presentacion;
 	}
 	
-	public void setIdPresentacion(final int idPresentacion) {
-		if(idPresentacion < 0)
-			throw new IllegalArgumentException("El ID de la presentacion no puede ser negativo");
-		this.idPresentacion = idPresentacion;
+	public void setPresentacion(final Presentacion presentacion) {
+		assert presentacion != null;
+		this.presentacion = presentacion;
 	}
 	
-	public int getIdSucursal() {
-		return idSucursal;
+	public Sucursal getSucursal() {
+		return sucursal;
 	}
 	
-	public void setIdSucursal(final int idSucursal) {
-		if(idSucursal < 0)
-			throw new IllegalArgumentException("El ID de la sucursal no puede ser negativo");
-		this.idSucursal = idSucursal;
+	public void setSucursal(final Sucursal sucursal) {
+		assert sucursal != null;
+		this.sucursal = sucursal;
 	}
 	
 	public int getCantidad() {
@@ -38,7 +37,8 @@ public final class Existencia {
 	
 	public void setCantidad(final int cantidad) {
 		if(cantidad < 0)
-			throw new IllegalArgumentException("La cantidad no puede ser negativa");
+			throw new IllegalArgumentException(
+					"La cantidad no puede ser negativa");
 		this.cantidad = cantidad;
 	}
 
@@ -46,8 +46,8 @@ public final class Existencia {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + idPresentacion;
-		result = prime * result + idSucursal;
+		result = prime * result + presentacion.getId();
+		result = prime * result + sucursal.getId();
 		return result;
 	}
 
@@ -60,9 +60,9 @@ public final class Existencia {
 		if (getClass() != obj.getClass())
 			return false;
 		Existencia other = (Existencia) obj;
-		if (idPresentacion != other.idPresentacion)
+		if (!presentacion.equals(other.presentacion))
 			return false;
-		if (idSucursal != other.idSucursal)
+		if (!sucursal.equals(other.sucursal))
 			return false;
 		return true;
 	}
